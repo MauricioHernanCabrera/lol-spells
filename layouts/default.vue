@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app dark class="app">
     <v-app-bar fixed app>
       <v-toolbar-title v-text="title" />
     </v-app-bar>
@@ -19,3 +19,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.app.app.app {
+  background-color: #0f0713;
+}
+</style>

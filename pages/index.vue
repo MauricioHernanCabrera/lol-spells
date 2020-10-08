@@ -1,43 +1,25 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="12"> </v-col>
+    <v-row justify="center">
+      <v-col cols="12" lg="8">
+        <app-champion />
+      </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import AppChampion from "@/components/Champion";
+
 export default {
-  mounted() {
-    (() => {
-      const championsEl = [
-        ...document.querySelectorAll(".champion-container-wrapper"),
-      ];
+  name: "Home",
 
-      const champions = championsEl.map((champion) => {
-        const backgroundEl = champion.querySelector(
-          ".champion-container.d-flex.align-items-center"
-        );
-        const iconEl = champion.querySelector(".champion-icon.text-center");
-        const nameEl = champion.querySelector(".value.champion-name");
-
-        const background = backgroundEl.style.backgroundImage
-          .replace('url("', "https:")
-          .replace('")', "");
-        const icon = iconEl.style.backgroundImage
-          .replace('url("', "https:")
-          .replace('")', "");
-        const name = nameEl.innerText;
-
-        return {
-          background,
-          icon,
-          name,
-        };
-      });
-
-      console.log(champions);
-    })();
+  components: {
+    AppChampion,
   },
 };
 </script>
+
+<style lang="scss">
+@import "./../assets/scss/utils.scss";
+</style>
