@@ -1,5 +1,5 @@
 <template>
-  <div class="champion">
+  <div class="champion" v-show="!isLoading">
     <div class="champion__header">
       <h1 class="champion__title">
         LOL SPELLS
@@ -75,30 +75,53 @@
 
     <div
       class="champion__item champion__item--no_items"
-      v-show="championsFiltered.length == 0"
+      v-show="championName.length > 0 && championsFiltered.length == 0"
     >
       <span class="champion__name">No se encontraron campeones</span>
+    </div>
+
+    <div class="champion__floating_button" v-show="hasSelectedChampions">
+      <v-btn to="/selected">Ir a la partida</v-btn>
     </div>
   </div>
 </template>
 
 <script>
 import championsData from "@/const/champions.json";
-import { findIndex } from "lodash";
+import { findIndex, some } from "lodash";
+import { mapMutations, mapState } from "vuex";
+
 export default {
   name: "Champion",
+
   data() {
     return {
-      champions: championsData.map((championItem) => ({
-        ...championItem,
-        selected: false,
-      })),
+      champions: [],
       championName: "",
       isExpanded: true,
+      isLoading: true,
     };
   },
 
+  mounted() {
+    this.champions = championsData.map((championItem) => {
+      const isSelected = some(this.selectedChampions, [
+        "name",
+        championItem.name,
+      ]);
+
+      return {
+        ...championItem,
+        selected: isSelected,
+      };
+    });
+
+    this.isLoading = false;
+  },
+
   computed: {
+    ...mapState(["selectedChampions"]),
+
     championsFiltered() {
       const championNameLower = this.championName.toLowerCase();
 
@@ -106,15 +129,22 @@ export default {
         name.toLowerCase().includes(championNameLower)
       );
     },
+
+    hasSelectedChampions() {
+      return this.champions.some(({ selected }) => selected);
+    },
   },
 
   methods: {
+    ...mapMutations(["ADD_SELECTED_CHAMPION", "REMOVE_SELECTED_CHAMPION"]),
+
     toggleChampion(championItem) {
       const championNameLower = championItem.name.toLowerCase();
 
-      const championIndex = this.champions.findIndex(({ name }) =>
-        name.toLowerCase().includes(championNameLower)
-      );
+      const championIndex = findIndex(this.champions, [
+        "name",
+        championItem.name,
+      ]);
 
       if (championIndex == -1) {
         return;
@@ -122,6 +152,12 @@ export default {
 
       this.champions[championIndex].selected = !this.champions[championIndex]
         .selected;
+
+      if (this.champions[championIndex].selected) {
+        this.ADD_SELECTED_CHAMPION(championItem);
+      } else {
+        this.REMOVE_SELECTED_CHAMPION(championItem);
+      }
     },
   },
 };
@@ -248,5 +284,13 @@ export default {
 .champion__name {
   margin-left: 12px;
   font-size: 18px;
+}
+
+.champion__floating_button {
+  z-index: 10;
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>

@@ -1,7 +1,9 @@
 <template>
   <v-app dark class="app">
-    <v-app-bar fixed app>
-      <v-toolbar-title v-text="title" />
+    <v-app-bar class="elevation-0" fixed app color="transparent">
+      <v-icon v-show="$route.name !== 'index'" @click="goBack">
+        mdi-chevron-left
+      </v-icon>
     </v-app-bar>
 
     <v-main>
@@ -12,16 +14,22 @@
 
 <script>
 export default {
-  data() {
-    return {
-      title: "Vuetify.js",
-    };
+  methods: {
+    goBack() {
+      this.$router.go(-1);
+    },
   },
 };
 </script>
 
 <style lang="scss">
-.app.app.app {
-  background-color: #0f0713;
+@import "./../assets/scss/_utils.scss";
+
+.app.app {
+  background-color: $color_primary2;
+
+  .v-toolbar__content {
+    border-bottom: 1px solid $color_primary;
+  }
 }
 </style>

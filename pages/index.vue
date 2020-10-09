@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="12" lg="8">
+      <v-col cols="12" lg="8" xl="6">
         <app-champion />
       </v-col>
     </v-row>
