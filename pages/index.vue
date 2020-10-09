@@ -2,20 +2,20 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="12" lg="8" xl="6">
-        <app-champion />
+        <lol-champion />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import AppChampion from "@/components/Champion";
+import LolChampion from "@/components/Champion";
 
 export default {
   name: "Home",
 
   components: {
-    AppChampion,
+    LolChampion,
   },
 };
 </script>

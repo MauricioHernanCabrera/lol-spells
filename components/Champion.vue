@@ -1,43 +1,38 @@
 <template>
   <div class="champion" v-show="!isLoading">
-    <div class="champion__header">
-      <h1 class="champion__title">
-        LOL SPELLS
-        <span>Selecciona campeones</span>
-      </h1>
+    <lol-champion-header title="LOL SPELLS" subtitle="Selecciona campeones" />
 
-      <div class="champion__search">
-        <label for="champion__search" class="champion__search_label"></label>
+    <div class="champion__search">
+      <label for="champion__search" class="champion__search_label"></label>
 
-        <input
-          type="text"
-          id="champion__search"
-          class="champion__search_input"
-          placeholder="Nombre del campeon ..."
-          v-model.trim="championName"
-        />
+      <input
+        type="text"
+        id="champion__search"
+        class="champion__search_input"
+        placeholder="Nombre del campeon ..."
+        v-model.trim="championName"
+      />
 
-        <div class="champion__search_icon">
-          <v-icon
-            v-show="championName.length > 0"
-            size="24"
-            color="#f6dea7"
-            @click="championName = ''"
-          >
-            mdi-close
-          </v-icon>
+      <div class="champion__search_icon">
+        <v-icon
+          v-show="championName.length > 0"
+          size="24"
+          color="#f6dea7"
+          @click="championName = ''"
+        >
+          mdi-close
+        </v-icon>
 
-          <v-icon
-            size="32"
-            color="#f6dea7"
-            @click="isExpanded = !isExpanded"
-            :style="{
-              transform: isExpanded ? 'rotate(0deg)' : 'rotate(180deg)',
-            }"
-          >
-            mdi-chevron-down
-          </v-icon>
-        </div>
+        <v-icon
+          size="32"
+          color="#f6dea7"
+          @click="isExpanded = !isExpanded"
+          :style="{
+            transform: isExpanded ? 'rotate(0deg)' : 'rotate(180deg)',
+          }"
+        >
+          mdi-chevron-down
+        </v-icon>
       </div>
     </div>
 
@@ -90,9 +85,14 @@
 import championsData from "@/const/champions.json";
 import { findIndex, some } from "lodash";
 import { mapMutations, mapState } from "vuex";
+import LolChampionHeader from "@/components/ChampionHeader";
 
 export default {
   name: "Champion",
+
+  components: {
+    LolChampionHeader,
+  },
 
   data() {
     return {
@@ -169,29 +169,9 @@ export default {
 .champion {
 }
 
-.champion__header {
-  margin-bottom: 12px;
-}
-
-.champion__title {
-  font-family: $font2;
-  text-align: center;
-  margin-top: 48px;
-  margin-bottom: 32px;
-  font-size: 40px;
-  line-height: 54px;
-  text-transform: uppercase;
-
-  span {
-    font-size: 32px;
-    font-size: 50px;
-    display: block;
-    color: $color_secondary;
-  }
-}
-
 .champion__search {
   position: relative;
+  margin-bottom: 24px;
 }
 
 .champion__search_label {
