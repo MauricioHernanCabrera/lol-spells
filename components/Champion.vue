@@ -43,27 +43,16 @@
           championsFiltered.length > 0
         "
       >
-        <li
-          class="champion__item"
-          :class="[{ 'champion__item--selected': championItem.selected }]"
+        <lol-champion-item
           v-for="championItem in championsFiltered"
           :key="championItem.name"
-          @click="toggleChampion(championItem)"
+          :selected="championItem.selected"
+          :background="championItem.background"
+          :icon="championItem.icon"
+          :name="championItem.name"
+          @toggle-champion="toggleChampion"
         >
-          <div
-            :style="{ 'background-image': `url('${championItem.background}')` }"
-            class="champion__background"
-          ></div>
-
-          <div class="champion__info">
-            <div
-              :style="{ 'background-image': `url('${championItem.icon}')` }"
-              class="champion__icon"
-            ></div>
-
-            <span class="champion__name">{{ championItem.name }}</span>
-          </div>
-        </li>
+        </lol-champion-item>
       </lol-champion-list>
     </v-expand-transition>
 
@@ -85,6 +74,7 @@ import championsData from "@/const/champions.json";
 import { findIndex } from "lodash";
 import LolChampionHeader from "@/components/ChampionHeader";
 import LolChampionList from "@/components/ChampionList";
+import LolChampionItem from "@/components/ChampionItem";
 
 export default {
   name: "Champion",
@@ -92,6 +82,7 @@ export default {
   components: {
     LolChampionHeader,
     LolChampionList,
+    LolChampionItem,
   },
 
   data() {
@@ -144,11 +135,8 @@ export default {
   },
 
   methods: {
-    toggleChampion(championItem) {
-      const championIndex = findIndex(this.champions, [
-        "name",
-        championItem.name,
-      ]);
+    toggleChampion(championName) {
+      const championIndex = findIndex(this.champions, ["name", championName]);
 
       if (championIndex == -1) {
         return;
@@ -207,64 +195,9 @@ export default {
   cursor: pointer;
 }
 
-.champion__item {
-  position: relative;
-  border: 1px solid $color_primary;
-  transition: 0.3s;
-  cursor: pointer;
-  overflow: hidden;
-  min-height: 90px;
-  display: flex;
-  align-items: center;
-
-  &:hover {
-    border-color: $color_secondary2;
-  }
-}
-
-.champion__item--selected {
-  border-color: $color_secondary2;
-
-  .champion__background {
-    transform: scale(1.1);
-  }
-}
-
 .champion__item--no_items {
   justify-content: center;
   min-height: 64px;
-}
-
-.champion__background {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  object-position: top center;
-  object-fit: cover;
-  z-index: 1;
-  transition: 0.1s;
-}
-
-.champion__info {
-  position: relative;
-  z-index: 2;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding: 12px;
-}
-
-.champion__icon {
-  border: 1px solid $color_primary;
-  height: 64px;
-  width: 64px;
-}
-
-.champion__name {
-  margin-left: 12px;
-  font-size: 18px;
 }
 
 .champion__floating_button {
