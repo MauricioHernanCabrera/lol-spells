@@ -116,8 +116,8 @@
             <lol-spell-item
               v-for="spellItem in spellsData"
               :key="spellItem.name"
-              @click="dialogSpell.handleClick(spellItem)"
               :icon="spellItem.icon"
+              @click="dialogSpell.handleClick(spellItem)"
             />
           </lol-spell-list>
         </v-card-text>
@@ -182,6 +182,7 @@ export default {
 
     openSpell(championItem, spellKey) {
       const handleClick = (spellItem) => {
+        console.log(spellItem);
         const championIndex = findIndex(this.selectedChampions, [
           "name",
           championItem.name,
