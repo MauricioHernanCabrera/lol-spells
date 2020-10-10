@@ -83,8 +83,7 @@
 
 <script>
 import championsData from "@/const/champions.json";
-import { findIndex, some } from "lodash";
-import { mapMutations, mapState } from "vuex";
+import { findIndex } from "lodash";
 import LolChampionHeader from "@/components/ChampionHeader";
 
 export default {
@@ -100,28 +99,36 @@ export default {
       championName: "",
       isExpanded: true,
       isLoading: true,
+      selectedChampions: {},
     };
   },
 
   mounted() {
+    this.selectedChampions =
+      JSON.parse(localStorage.getItem("selectedChampions")) || {};
+
     this.champions = championsData.map((championItem) => {
-      const isSelected = some(this.selectedChampions, [
-        "name",
-        championItem.name,
-      ]);
+      const selected = this.selectedChampions.hasOwnProperty(championItem.name);
 
       return {
         ...championItem,
-        selected: isSelected,
+        selected,
       };
     });
 
     this.isLoading = false;
   },
 
-  computed: {
-    ...mapState(["selectedChampions"]),
+  watch: {
+    selectedChampions: {
+      handler(newValue) {
+        localStorage.setItem("selectedChampions", JSON.stringify(newValue));
+      },
+      deep: true,
+    },
+  },
 
+  computed: {
     championsFiltered() {
       const championNameLower = this.championName.toLowerCase();
 
@@ -136,11 +143,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["ADD_SELECTED_CHAMPION", "REMOVE_SELECTED_CHAMPION"]),
-
     toggleChampion(championItem) {
-      const championNameLower = championItem.name.toLowerCase();
-
       const championIndex = findIndex(this.champions, [
         "name",
         championItem.name,
@@ -150,14 +153,19 @@ export default {
         return;
       }
 
-      this.champions[championIndex].selected = !this.champions[championIndex]
-        .selected;
+      const champion = this.champions[championIndex];
+      champion.selected = !champion.selected;
 
-      if (this.champions[championIndex].selected) {
-        this.ADD_SELECTED_CHAMPION(championItem);
-      } else {
-        this.REMOVE_SELECTED_CHAMPION(championItem);
+      if (champion.selected) {
+        this.selectedChampions = {
+          ...this.selectedChampions,
+          [champion.name]: "_",
+        };
+        return;
       }
+
+      delete this.selectedChampions[champion.name];
+      this.selectedChampions = { ...this.selectedChampions };
     },
   },
 };

@@ -1,38 +1,42 @@
 [
   {
-    "icon": "/images/heal.png",
-    "name": "Curación"
-  },
-  {
-    "icon": "/images/ghost.png",
-    "name": "Fantasma"
-  },
-  {
-    "icon": "/images/barrier.png",
+    "icon": "/images/spells/barrier.png",
     "name": "Barrera"
   },
   {
-    "icon": "/images/exhaust.png",
-    "name": "Extenuación"
-  },
-  {
-    "icon": "/images/teleport.png",
-    "name": "Teleportación"
-  },
-  {
-    "icon": "/images/cleanse.png",
-    "name": "Purificación"
-  },
-  {
-    "icon": "/images/ignite.png",
-    "name": "Ignición"
-  },
-  {
-    "icon": "/images/smite.png",
+    "icon": "/images/spells/smite.png",
     "name": "Castigo"
   },
   {
-    "icon": "/images/clarity.png",
+    "icon": "/images/spells/clarity.png",
     "name": "Claridad"
   },
+  {
+    "icon": "/images/spells/heal.png",
+    "name": "Curación"
+  },
+  {
+    "icon": "/images/spells/flash.png",
+    "name": "Destello"
+  },
+  {
+    "icon": "/images/spells/exhaust.png",
+    "name": "Extenuación"
+  },
+  {
+    "icon": "/images/spells/ghost.png",
+    "name": "Fantasma"
+  },
+  {
+    "icon": "/images/spells/ignite.png",
+    "name": "Ignición"
+  },
+  {
+    "icon": "/images/spells/cleanse.png",
+    "name": "Purificación"
+  },
+  {
+    "icon": "/images/spells/teleport.png",
+    "name": "Teleportación"
+  }
 ]

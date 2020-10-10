@@ -40,6 +40,7 @@ export default {
   font-family: $font2;
   text-align: center;
   font-size: 50px;
+  line-height: 54px;
   display: block;
   color: $color_secondary;
   margin-bottom: 32px;

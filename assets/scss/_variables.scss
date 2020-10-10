@@ -6,3 +6,10 @@ $color_light: #fff;
 
 $font1: sans-serif;
 $font2: beaufort;
+
+$breakpoints: (
+  sm: 600px,
+  md: 960px,
+  lg: 1264px,
+  xl: 1904px
+) !default;
