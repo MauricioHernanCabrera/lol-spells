@@ -56,12 +56,11 @@
       </lol-champion-list>
     </v-expand-transition>
 
-    <div
-      class="champion__item champion__item--no_items"
+    <lol-champion-no-items
       v-show="championName.length > 0 && championsFiltered.length == 0"
     >
-      <span class="champion__name">No se encontraron campeones</span>
-    </div>
+      No se encontraron campeones
+    </lol-champion-no-items>
 
     <div class="champion__floating_button" v-show="hasSelectedChampions">
       <v-btn to="/selected">Ir a la partida</v-btn>
@@ -75,6 +74,7 @@ import { findIndex } from "lodash";
 import LolChampionHeader from "@/components/ChampionHeader";
 import LolChampionList from "@/components/ChampionList";
 import LolChampionItem from "@/components/ChampionItem";
+import LolChampionNoItems from "@/components/ChampionNoItems";
 
 export default {
   name: "Champion",
@@ -83,6 +83,7 @@ export default {
     LolChampionHeader,
     LolChampionList,
     LolChampionItem,
+    LolChampionNoItems,
   },
 
   data() {
