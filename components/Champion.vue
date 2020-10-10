@@ -2,45 +2,16 @@
   <div class="champion" v-show="!isLoading">
     <lol-champion-header title="LOL SPELLS" subtitle="Selecciona campeones" />
 
-    <div class="champion__search">
-      <label for="champion__search" class="champion__search_label"></label>
-
-      <input
-        type="text"
-        id="champion__search"
-        class="champion__search_input"
-        placeholder="Nombre del campeon ..."
-        v-model.trim="championName"
-      />
-
-      <div class="champion__search_icon">
-        <v-icon
-          v-show="championName.length > 0"
-          size="24"
-          color="#f6dea7"
-          @click="championName = ''"
-        >
-          mdi-close
-        </v-icon>
-
-        <v-icon
-          size="32"
-          color="#f6dea7"
-          @click="isExpanded = !isExpanded"
-          :style="{
-            transform: isExpanded ? 'rotate(0deg)' : 'rotate(180deg)',
-          }"
-        >
-          mdi-chevron-down
-        </v-icon>
-      </div>
-    </div>
+    <lol-champion-search
+      v-model="championName"
+      :expanded="expanded"
+      @toggle-expanded="expanded = !expanded"
+    />
 
     <v-expand-transition>
       <lol-champion-list
         v-show="
-          (championName.length > 0 || isExpanded) &&
-          championsFiltered.length > 0
+          (championName.length > 0 || expanded) && championsFiltered.length > 0
         "
       >
         <lol-champion-item
@@ -72,6 +43,7 @@
 import championsData from "@/const/champions.json";
 import { findIndex } from "lodash";
 import LolChampionHeader from "@/components/ChampionHeader";
+import LolChampionSearch from "@/components/ChampionSearch";
 import LolChampionList from "@/components/ChampionList";
 import LolChampionItem from "@/components/ChampionItem";
 import LolChampionNoItems from "@/components/ChampionNoItems";
@@ -81,6 +53,7 @@ export default {
 
   components: {
     LolChampionHeader,
+    LolChampionSearch,
     LolChampionList,
     LolChampionItem,
     LolChampionNoItems,
@@ -90,7 +63,7 @@ export default {
     return {
       champions: [],
       championName: "",
-      isExpanded: true,
+      expanded: true,
       isLoading: true,
       selectedChampions: {},
     };
@@ -165,40 +138,6 @@ export default {
 @import "./../assets/scss/utils.scss";
 
 .champion {
-}
-
-.champion__search {
-  position: relative;
-  margin-bottom: 24px;
-}
-
-.champion__search_label {
-}
-
-.champion__search_input {
-  width: 100%;
-  color: $color_light;
-  height: 64px;
-  border: 1px solid $color_primary;
-  padding: 0 24px;
-  outline: none;
-
-  &:focus {
-    border-color: $color_secondary2;
-  }
-}
-
-.champion__search_icon {
-  position: absolute;
-  top: 50%;
-  right: 24px;
-  transform: translateY(-50%);
-  cursor: pointer;
-}
-
-.champion__item--no_items {
-  justify-content: center;
-  min-height: 64px;
 }
 
 .champion__floating_button {
