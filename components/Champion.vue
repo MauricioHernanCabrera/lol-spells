@@ -37,8 +37,7 @@
     </div>
 
     <v-expand-transition>
-      <ul
-        class="champion__list"
+      <lol-champion-list
         v-show="
           (championName.length > 0 || isExpanded) &&
           championsFiltered.length > 0
@@ -65,7 +64,7 @@
             <span class="champion__name">{{ championItem.name }}</span>
           </div>
         </li>
-      </ul>
+      </lol-champion-list>
     </v-expand-transition>
 
     <div
@@ -85,12 +84,14 @@
 import championsData from "@/const/champions.json";
 import { findIndex } from "lodash";
 import LolChampionHeader from "@/components/ChampionHeader";
+import LolChampionList from "@/components/ChampionList";
 
 export default {
   name: "Champion",
 
   components: {
     LolChampionHeader,
+    LolChampionList,
   },
 
   data() {
@@ -204,14 +205,6 @@ export default {
   right: 24px;
   transform: translateY(-50%);
   cursor: pointer;
-}
-
-.champion__list.champion__list {
-  display: grid;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
 .champion__item {
