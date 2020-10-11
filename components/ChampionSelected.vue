@@ -48,6 +48,10 @@
       </li>
     </ul>
 
+    <lol-champion-no-items v-show="selectedChampions.length == 0">
+      No se encontraron campeones
+    </lol-champion-no-items>
+
     <v-dialog v-model="dialogSpell.active" width="500">
       <v-card>
         <v-card-text class="pt-6">
@@ -74,6 +78,7 @@ import LolChampionSpellItem from "@/components/ChampionSpellItem";
 import LolChampionSpellList from "@/components/ChampionSpellList";
 import LolSpellItem from "@/components/SpellItem";
 import LolSpellList from "@/components/SpellList";
+import LolChampionNoItems from "@/components/ChampionNoItems";
 
 export default {
   name: "ChampionSelected",
@@ -84,6 +89,8 @@ export default {
     LolSpellList,
     LolChampionSpellItem,
     LolChampionSpellList,
+
+    LolChampionNoItems,
   },
 
   data() {
