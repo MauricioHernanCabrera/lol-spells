@@ -14,9 +14,11 @@
     "@nuxtjs/pwa": "^3.0.2",
     "core-js": "^3.6.5",
     "lodash": "^4.17.20",
-    "nuxt": "^2.14.6"
+    "nuxt": "^2.14.6",
+    "tymo-utils": "^1.5.0"
   },
   "devDependencies": {
-    "@nuxtjs/vuetify": "^1.11.2"
+    "@nuxtjs/vuetify": "^1.11.2",
+    "push-dir": "^0.4.1"
   }
 }

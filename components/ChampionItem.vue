@@ -55,10 +55,6 @@ export default {
   min-height: 90px;
   display: flex;
   align-items: center;
-
-  &:hover {
-    border-color: $color_secondary2;
-  }
 }
 
 .champion__item--selected {
