@@ -28,82 +28,21 @@
 
           <div class="spacer"></div>
 
-          <div class="champion__spells">
-            <div
-              class="champion__spells_item champion__spells_item--first"
-              :class="[
-                {
-                  'champion__spells_item--empty': championItem.firstSpell.name
-                    ? false
-                    : true,
-                },
-              ]"
-              @click="
-                championItem.firstSpell.name
-                  ? () => {}
-                  : openSpell(championItem, 'firstSpell')
-              "
-            >
-              <template v-if="championItem.firstSpell.name">
-                <v-img
-                  class="champion__spells_icon"
-                  :aspect-ratio="1"
-                  :src="championItem.firstSpell.icon"
-                ></v-img>
+          <div class="champion__spell_list">
+            <lol-champion-spell-item
+              :championItem="championItem"
+              spellPosition="firstSpell"
+              @start-timer="startTimer"
+              @open-spell-modal="openSpellModal"
+              class="mr-3"
+            />
 
-                <v-btn
-                  text
-                  x-small
-                  block
-                  class="mt-1"
-                  @click="openSpell(championItem, 'firstSpell')"
-                >
-                  <v-icon size="16">mdi-pencil-outline</v-icon>
-                </v-btn>
-              </template>
-
-              <template v-else>
-                <v-icon>mdi-plus</v-icon>
-              </template>
-            </div>
-
-            <div
-              class="champion__spells_item champion__spells_item--second"
-              :class="[
-                {
-                  'champion__spells_item--empty': championItem.secondSpell.name
-                    ? false
-                    : true,
-                },
-              ]"
-              @click="
-                championItem.secondSpell.name
-                  ? () => {}
-                  : openSpell(championItem, 'secondSpell')
-              "
-            >
-              <template v-if="championItem.secondSpell.name">
-                <v-img
-                  class="champion__spells_icon"
-                  :aspect-ratio="1"
-                  :src="championItem.secondSpell.icon"
-                ></v-img>
-
-                <v-btn
-                  text
-                  x-small
-                  block
-                  class="mt-1"
-                  @click="openSpell(championItem, 'secondSpell')"
-                >
-                  <v-icon size="16">mdi-pencil-outline</v-icon>
-                </v-btn>
-              </template>
-
-              <template v-else>
-                <v-icon>mdi-plus</v-icon>
-              </template>
-            </div>
+            <lol-champion-spell-item
+              :championItem="championItem"
+              spellPosition="secondSpell"
+              @start-timer="startTimer"
+              @open-spell-modal="openSpellModal"
+            />
           </div>
         </div>
       </li>
@@ -131,6 +70,7 @@ import { find, findIndex } from "lodash";
 import championsData from "@/const/champions.json";
 import spellsData from "@/const/spells.json";
 import LolChampionHeader from "@/components/ChampionHeader";
+import LolChampionSpellItem from "@/components/ChampionSpellItem";
 import LolSpellItem from "@/components/SpellItem";
 import LolSpellList from "@/components/SpellList";
 
@@ -141,6 +81,7 @@ export default {
     LolChampionHeader,
     LolSpellItem,
     LolSpellList,
+    LolChampionSpellItem,
   },
 
   data() {
@@ -177,10 +118,28 @@ export default {
         return;
       }
 
+      if (this.selectedChampions[championIndex].firstSpell) {
+        this.restartTimer(this.selectedChampions[championIndex], "firstSpell");
+      }
+
+      if (this.selectedChampions[championIndex].firstSpell) {
+        this.restartTimer(this.selectedChampions[championIndex], "secondSpell");
+      }
+
       this.selectedChampions.splice(championIndex, 1);
+
+      const selectedChampionsStorage =
+        JSON.parse(localStorage.getItem("selectedChampions")) || {};
+      delete selectedChampionsStorage[championName];
+      localStorage.setItem(
+        "selectedChampions",
+        JSON.stringify(selectedChampionsStorage)
+      );
     },
 
-    openSpell(championItem, spellKey) {
+    openSpellModal(championItem, spellKey) {
+      console.log(championItem, spellKey);
+
       const handleClick = (spellItem) => {
         console.log(spellItem);
         const championIndex = findIndex(this.selectedChampions, [
@@ -192,14 +151,49 @@ export default {
           return;
         }
 
-        this.selectedChampions[championIndex][spellKey] = spellItem;
+        this.selectedChampions[championIndex][spellKey] = {
+          ...spellItem,
+          interval: null,
+          isRun: false,
+          defaultDuration: spellItem.duration,
+        };
         this.dialogSpell.active = false;
+        console.log(this.selectedChampions[championIndex][spellKey]);
       };
 
       this.dialogSpell = {
         active: true,
         handleClick,
       };
+    },
+
+    restartTimer(championItem, spellKey) {
+      const item = championItem[spellKey];
+      clearInterval(item.interval);
+      item.interval = null;
+      item.duration = item.defaultDuration;
+      item.isRun = false;
+    },
+
+    startTimer(championItem, spellKey) {
+      const item = championItem[spellKey];
+
+      if (item.isRun) {
+        this.restartTimer(championItem, spellKey);
+        return;
+      }
+
+      item.interval = setInterval(() => {
+        item.duration--;
+
+        if (item.duration < 0) {
+          this.restartTimer(championItem, spellKey);
+        }
+
+        console.log(item.duration);
+      }, 1000);
+
+      item.isRun = true;
     },
   },
 };
@@ -257,7 +251,7 @@ export default {
   }
 }
 
-.champion__icon:hover ~ .champion__spells {
+.champion__icon:hover ~ .champion__spell {
   opacity: 0;
 }
 
@@ -272,37 +266,11 @@ export default {
   }
 }
 
-.champion__spells.champion__spells {
+.champion__spell_list.champion__spell_list {
   display: flex;
   padding: 0;
   margin: 0;
   list-style: none;
   margin-left: 24px;
-}
-
-.champion__spells_item {
-  width: 64px;
-  min-height: 64px;
-}
-
-.champion__spells_icon {
-  border: 1px solid $color_primary;
-}
-
-.champion__spells_item--first {
-  margin-right: 12px;
-}
-
-.champion__spells_item--empty {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: 0.1s;
-  cursor: pointer;
-  border: 1px solid $color_primary;
-
-  &:hover {
-    background-color: $color_primary;
-  }
 }
 </style>
