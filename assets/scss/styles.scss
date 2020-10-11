@@ -1,0 +1,11 @@
+@font-face {
+  font-family: beaufort;
+  src: url(./../fonts/BeauBold-webfont.woff2) format("woff2"),
+    url(./../fonts/BeauBold-webfont.woff) format("woff");
+  font-style: normal;
+  font-weight: 400;
+}
+
+spacer {
+  flex-grow: 1;
+}

@@ -2,24 +2,23 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="12" lg="8" xl="6">
-        <lol-champion />
+        <lol-champion-selected />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import LolChampion from "@/components/Champion";
+import LolChampionSelected from "@/components/ChampionSelected";
 
 export default {
-  name: "Home",
+  name: "Selected",
 
   components: {
-    LolChampion,
+    LolChampionSelected,
   },
 };
 </script>
 
-<style lang="scss">
-@import "./../assets/scss/utils.scss";
+<style lang="scss" scoped>
 </style>
