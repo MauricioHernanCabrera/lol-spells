@@ -28,7 +28,7 @@
 
           <div class="spacer"></div>
 
-          <div class="champion__spell_list">
+          <lol-champion-spell-list>
             <lol-champion-spell-item
               :championItem="championItem"
               spellPosition="firstSpell"
@@ -43,7 +43,7 @@
               @start-timer="startTimer"
               @open-spell-modal="openSpellModal"
             />
-          </div>
+          </lol-champion-spell-list>
         </div>
       </li>
     </ul>
@@ -71,6 +71,7 @@ import championsData from "@/const/champions.json";
 import spellsData from "@/const/spells.json";
 import LolChampionHeader from "@/components/ChampionHeader";
 import LolChampionSpellItem from "@/components/ChampionSpellItem";
+import LolChampionSpellList from "@/components/ChampionSpellList";
 import LolSpellItem from "@/components/SpellItem";
 import LolSpellList from "@/components/SpellList";
 
@@ -82,6 +83,7 @@ export default {
     LolSpellItem,
     LolSpellList,
     LolChampionSpellItem,
+    LolChampionSpellList,
   },
 
   data() {
@@ -264,13 +266,5 @@ export default {
   @include breakpoint(sm) {
     display: block;
   }
-}
-
-.champion__spell_list.champion__spell_list {
-  display: flex;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  margin-left: 24px;
 }
 </style>
