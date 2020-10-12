@@ -5,13 +5,15 @@
     @click="$emit('toggle-champion', name)"
   >
     <div
-      :style="{ 'background-image': `url('${background}')` }"
+      :style="{
+        'background-image': `url('${$router.history.base}${background}')`,
+      }"
       class="champion__background"
     ></div>
 
     <div class="champion__info">
       <div
-        :style="{ 'background-image': `url('${icon}')` }"
+        :style="{ 'background-image': `url('${$router.history.base}${icon}')` }"
         class="champion__icon"
       ></div>
 

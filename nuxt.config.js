@@ -50,6 +50,11 @@ export default {
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {},
 
+  workbox: {
+    cacheAssets: false,
+    offline: false
+  },
+
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
