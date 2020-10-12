@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-show="!isLoading">
     <lol-champion-header title="LOL SPELLS" subtitle="Selecciona hechizos" />
 
     <lol-champion-list v-show="selectedChampions.length > 0">
@@ -96,6 +96,7 @@ export default {
 
   data() {
     return {
+      isLoading: true,
       spellsData,
       selectedChampions: [],
       dialogSpell: {
@@ -115,6 +116,8 @@ export default {
       firstSpell: {},
       secondSpell: {},
     }));
+
+    this.isLoading = false;
   },
 
   methods: {
