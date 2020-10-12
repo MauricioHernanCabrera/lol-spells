@@ -28,6 +28,17 @@
 
           <div class="spacer"></div>
 
+          <div
+            class="champion__boots"
+            :class="[{ 'champion__boots--active': championItem.hasBoots }]"
+            @click="championItem.hasBoots = !championItem.hasBoots"
+          >
+            <v-img
+              :src="`${$router.history.base}/images/items/boots.png`"
+              aspect-ratio="1"
+            ></v-img>
+          </div>
+
           <lol-champion-spell-list>
             <lol-champion-spell-item
               :championItem="championItem"
@@ -115,6 +126,7 @@ export default {
       ...find(championsData, ["name", key]),
       firstSpell: {},
       secondSpell: {},
+      hasBoots: false,
     }));
 
     this.isLoading = false;
@@ -190,6 +202,10 @@ export default {
       if (item.isRun) {
         this.restartTimer(championItem, spellKey);
         return;
+      }
+
+      if (championItem.hasBoots) {
+        item.duration = item.duration * 0.9;
       }
 
       item.interval = setInterval(() => {
@@ -271,5 +287,18 @@ export default {
   @include breakpoint(sm) {
     display: block;
   }
+}
+
+.champion__boots {
+  min-width: 32px;
+  transition: 0.1s;
+  filter: grayscale(100%);
+  cursor: pointer;
+  border: 1px solid $color_primary;
+  margin-left: 12px;
+}
+
+.champion__boots--active {
+  filter: grayscale(0);
 }
 </style>
