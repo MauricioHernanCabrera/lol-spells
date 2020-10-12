@@ -1,7 +1,12 @@
 <template>
   <div
     class="champion__spell_item"
-    :class="classChampionSpellItem"
+    :class="[
+      {
+        'champion__spell_item--empty': !championSpellItem.name,
+        'champion__spell_item--run': championSpellItem.isRun,
+      },
+    ]"
     @click="championSpellItem.name ? () => {} : openSpellDialog()"
   >
     <template v-if="championSpellItem.name">
@@ -52,20 +57,6 @@ export default {
   computed: {
     championSpellItem() {
       return this.championItem[this.spellPosition];
-    },
-
-    classChampionSpellItem() {
-      const classHtml = [];
-
-      if (!this.championSpellItem.name) {
-        classHtml.push("champion__spell_item--empty");
-      }
-
-      if (this.championSpellItem.isRun) {
-        classHtml.push("champion__spell_item--run");
-      }
-
-      return classHtml;
     },
   },
 

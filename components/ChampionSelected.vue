@@ -201,26 +201,43 @@ export default {
     },
 
     startTimer(championItem, spellKey) {
-      const item = championItem[spellKey];
+      const championIndex = findIndex(this.selectedChampions, [
+        "name",
+        championItem.name,
+      ]);
 
-      if (item.isRun) {
+      if (championIndex == -1) {
+        return;
+      }
+
+      const championSpell = this.selectedChampions[championIndex][spellKey];
+
+      if (championSpell.isRun) {
         this.restartTimer(championItem, spellKey);
         return;
       }
 
+      let coolDown = 1.0;
+
       if (championItem.hasBoots) {
-        item.duration = item.duration * 0.9;
+        coolDown -= 0.1;
       }
 
-      item.interval = setInterval(() => {
-        item.duration--;
+      championSpell.isRun = true;
+      championSpell.duration *= coolDown;
 
-        if (item.duration < 0) {
+      if (championSpell.name == "Teleportación") {
+        championSpell.duration -= (championItem.level - 1) * 10;
+      }
+
+      championSpell.duration--;
+
+      championSpell.interval = setInterval(() => {
+        if (championSpell.duration < 0) {
           this.restartTimer(championItem, spellKey);
         }
+        championSpell.duration--;
       }, 1000);
-
-      item.isRun = true;
     },
 
     openLevelDialog(championItem) {
