@@ -2,7 +2,7 @@
   <div>
     <lol-champion-header title="LOL SPELLS" subtitle="Selecciona hechizos" />
 
-    <ul class="champion__list" v-show="selectedChampions.length > 0">
+    <lol-champion-list v-show="selectedChampions.length > 0">
       <li
         class="champion__item"
         v-for="championItem in selectedChampions"
@@ -46,7 +46,7 @@
           </lol-champion-spell-list>
         </div>
       </li>
-    </ul>
+    </lol-champion-list>
 
     <lol-champion-no-items v-show="selectedChampions.length == 0">
       No se encontraron campeones
@@ -59,7 +59,7 @@
             <lol-spell-item
               v-for="spellItem in spellsData"
               :key="spellItem.name"
-              :icon="spellItem.icon"
+              :icon="`${$router.history.base}${spellItem.icon}`"
               @click="dialogSpell.handleClick(spellItem)"
             />
           </lol-spell-list>
@@ -74,6 +74,7 @@ import { find, findIndex } from "lodash";
 import championsData from "@/const/champions.json";
 import spellsData from "@/const/spells.json";
 import LolChampionHeader from "@/components/ChampionHeader";
+import LolChampionList from "@/components/ChampionList";
 import LolChampionSpellItem from "@/components/ChampionSpellItem";
 import LolChampionSpellList from "@/components/ChampionSpellList";
 import LolSpellItem from "@/components/SpellItem";
@@ -89,7 +90,7 @@ export default {
     LolSpellList,
     LolChampionSpellItem,
     LolChampionSpellList,
-
+    LolChampionList,
     LolChampionNoItems,
   },
 
@@ -147,10 +148,7 @@ export default {
     },
 
     openSpellModal(championItem, spellKey) {
-      console.log(championItem, spellKey);
-
       const handleClick = (spellItem) => {
-        console.log(spellItem);
         const championIndex = findIndex(this.selectedChampions, [
           "name",
           championItem.name,
@@ -167,7 +165,6 @@ export default {
           defaultDuration: spellItem.duration,
         };
         this.dialogSpell.active = false;
-        console.log(this.selectedChampions[championIndex][spellKey]);
       };
 
       this.dialogSpell = {
@@ -198,8 +195,6 @@ export default {
         if (item.duration < 0) {
           this.restartTimer(championItem, spellKey);
         }
-
-        console.log(item.duration);
       }, 1000);
 
       item.isRun = true;
