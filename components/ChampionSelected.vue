@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-show="!isLoading">
     <lol-champion-header title="LOL SPELLS" subtitle="Selecciona hechizos" />
 
     <lol-champion-list v-show="selectedChampions.length > 0">
@@ -10,7 +10,7 @@
       >
         <div
           :style="{
-            'background-image': `url('${championItem.background}')`,
+            'background-image': `url('${$router.history.base}${championItem.background}')`,
           }"
           class="champion__background"
         ></div>
@@ -19,7 +19,7 @@
           <v-img
             class="champion__icon"
             :aspect-ratio="1"
-            :src="championItem.icon"
+            :src="`${$router.history.base}${championItem.icon}`"
             @click="removeSelectedChampion(championItem.name)"
           >
           </v-img>
@@ -59,7 +59,7 @@
             <lol-spell-item
               v-for="spellItem in spellsData"
               :key="spellItem.name"
-              :icon="`${$router.history.base}${spellItem.icon}`"
+              :icon="spellItem.icon"
               @click="dialogSpell.handleClick(spellItem)"
             />
           </lol-spell-list>
@@ -96,6 +96,7 @@ export default {
 
   data() {
     return {
+      isLoading: true,
       spellsData,
       selectedChampions: [],
       dialogSpell: {
@@ -115,6 +116,8 @@ export default {
       firstSpell: {},
       secondSpell: {},
     }));
+
+    this.isLoading = false;
   },
 
   methods: {

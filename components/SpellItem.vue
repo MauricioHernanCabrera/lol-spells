@@ -1,6 +1,10 @@
 <template>
   <div class="spell__item" v-on="$listeners">
-    <v-img class="spell__icon" :aspect-ratio="1" :src="icon"></v-img>
+    <v-img
+      class="spell__icon"
+      :aspect-ratio="1"
+      :src="`${$router.history.base}${icon}`"
+    ></v-img>
   </div>
 </template>
 
