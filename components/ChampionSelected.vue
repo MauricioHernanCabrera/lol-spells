@@ -86,14 +86,14 @@
       <v-card>
         <v-card-text class="pt-6">
           <lol-level-list>
-            <div
-              class="level__item"
+            <lol-level-item
               v-for="level in 18"
               :key="level"
+              :level="level"
               @click="dialogLevel.handleClick(level)"
             >
               {{ level }}
-            </div>
+            </lol-level-item>
           </lol-level-list>
         </v-card-text>
       </v-card>
@@ -113,6 +113,7 @@ import LolSpellItem from "@/components/SpellItem";
 import LolSpellList from "@/components/SpellList";
 import LolChampionNoItems from "@/components/ChampionNoItems";
 import LolLevelList from "@/components/LevelList";
+import LolLevelItem from "@/components/LevelItem";
 
 export default {
   name: "ChampionSelected",
@@ -126,6 +127,7 @@ export default {
     LolChampionList,
     LolChampionNoItems,
     LolLevelList,
+    LolLevelItem,
   },
 
   data() {
