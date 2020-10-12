@@ -1,33 +1,18 @@
 <template>
   <div
     class="champion__spell_item"
-    :class="[
-      {
-        'champion__spell_item--empty': championItem[spellPosition].name
-          ? false
-          : true,
-      },
-      {
-        'champion__spell_item--run': championItem[spellPosition].isRun
-          ? true
-          : false,
-      },
-    ]"
-    @click="
-      championItem[spellPosition].name
-        ? () => {}
-        : $emit('open-spell-modal', championItem, spellPosition)
-    "
+    :class="classChampionSpellItem"
+    @click="championSpellItem.name ? () => {} : openSpellModal()"
   >
-    <template v-if="championItem[spellPosition].name">
+    <template v-if="championSpellItem.name">
       <v-img
         class="champion__spell_icon"
         :aspect-ratio="1"
-        :src="championItem[spellPosition].icon"
-        @click="$emit('start-timer', championItem, spellPosition)"
+        :src="`${$router.history.base}${championSpellItem.icon}`"
+        @click="startTimer"
       >
         <div class="champion__spell_duration">
-          {{ championItem[spellPosition].duration | time }}
+          {{ championSpellItem.duration | time }}
         </div>
       </v-img>
 
@@ -36,7 +21,7 @@
         x-small
         block
         class="mt-1 champion__spell_open"
-        @click="$emit('open-spell-modal', championItem, spellPosition)"
+        @click="openSpellModal"
       >
         <v-icon size="16">mdi-pencil-outline</v-icon>
       </v-btn>
@@ -49,6 +34,8 @@
 </template>
 
 <script>
+import { padStart } from "lodash";
+
 export default {
   props: {
     championItem: {
@@ -62,14 +49,42 @@ export default {
     },
   },
 
+  computed: {
+    championSpellItem() {
+      return this.championItem[this.spellPosition];
+    },
+
+    classChampionSpellItem() {
+      const classHtml = [];
+
+      if (!this.championSpellItem.name) {
+        classHtml.push("champion__spell_item--empty");
+      }
+
+      if (this.championSpellItem.isRun) {
+        classHtml.push("champion__spell_item--run");
+      }
+
+      return classHtml;
+    },
+  },
+
+  methods: {
+    openSpellModal() {
+      this.$emit("open-spell-modal", this.championItem, this.spellPosition);
+    },
+
+    startTimer() {
+      this.$emit("start-timer", this.championItem, this.spellPosition);
+    },
+  },
+
   filters: {
     time(time) {
       const minutes = Math.floor(time / 60);
       const seconds = Math.floor(time % 60);
 
-      return `${minutes}:${
-        String(seconds).length == 2 ? seconds : `0${seconds}`
-      }`;
+      return `${minutes}:${padStart(seconds, 2, "0")}`;
     },
   },
 };
