@@ -67,20 +67,10 @@
       No se encontraron campeones
     </lol-champion-no-items>
 
-    <v-dialog v-model="dialogSpell.active" width="500">
-      <v-card>
-        <v-card-text class="pt-6">
-          <lol-spell-list>
-            <lol-spell-item
-              v-for="spellItem in spellsData"
-              :key="spellItem.name"
-              :icon="spellItem.icon"
-              @click="dialogSpell.handleClick(spellItem)"
-            />
-          </lol-spell-list>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+    <lol-spell-dialog
+      v-model="dialogSpell.active"
+      @spell-selected="dialogSpell.handleClick"
+    />
 
     <lol-level-dialog
       v-model="dialogLevel.active"
@@ -92,34 +82,32 @@
 <script>
 import { find, findIndex } from "lodash";
 import championsData from "@/const/champions.json";
-import spellsData from "@/const/spells.json";
+
 import LolChampionHeader from "@/components/ChampionHeader";
 import LolChampionList from "@/components/ChampionList";
 import LolChampionSpellItem from "@/components/ChampionSpellItem";
 import LolChampionSpellList from "@/components/ChampionSpellList";
-import LolSpellItem from "@/components/SpellItem";
-import LolSpellList from "@/components/SpellList";
 import LolChampionNoItems from "@/components/ChampionNoItems";
 import LolLevelDialog from "@/components/LevelDialog";
+import LolSpellDialog from "@/components/SpellDialog";
 
 export default {
   name: "ChampionSelected",
 
   components: {
     LolChampionHeader,
-    LolSpellItem,
-    LolSpellList,
+
     LolChampionSpellItem,
     LolChampionSpellList,
     LolChampionList,
     LolChampionNoItems,
     LolLevelDialog,
+    LolSpellDialog,
   },
 
   data() {
     return {
       isLoading: true,
-      spellsData,
       selectedChampions: [],
       dialogLevel: {
         active: false,
