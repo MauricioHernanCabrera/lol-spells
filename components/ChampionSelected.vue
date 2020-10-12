@@ -28,12 +28,27 @@
 
           <div class="spacer"></div>
 
+          <div class="champion__level" @click="openLevelDialog(championItem)">
+            {{ championItem.level }}
+          </div>
+
+          <div
+            class="champion__boots"
+            :class="[{ 'champion__boots--active': championItem.hasBoots }]"
+            @click="championItem.hasBoots = !championItem.hasBoots"
+          >
+            <v-img
+              :src="`${$router.history.base}/images/items/boots.png`"
+              aspect-ratio="1"
+            ></v-img>
+          </div>
+
           <lol-champion-spell-list>
             <lol-champion-spell-item
               :championItem="championItem"
               spellPosition="firstSpell"
               @start-timer="startTimer"
-              @open-spell-modal="openSpellModal"
+              @open-spell-dialog="openSpellDialog"
               class="mr-3"
             />
 
@@ -41,7 +56,7 @@
               :championItem="championItem"
               spellPosition="secondSpell"
               @start-timer="startTimer"
-              @open-spell-modal="openSpellModal"
+              @open-spell-dialog="openSpellDialog"
             />
           </lol-champion-spell-list>
         </div>
@@ -52,53 +67,52 @@
       No se encontraron campeones
     </lol-champion-no-items>
 
-    <v-dialog v-model="dialogSpell.active" width="500">
-      <v-card>
-        <v-card-text class="pt-6">
-          <lol-spell-list>
-            <lol-spell-item
-              v-for="spellItem in spellsData"
-              :key="spellItem.name"
-              :icon="spellItem.icon"
-              @click="dialogSpell.handleClick(spellItem)"
-            />
-          </lol-spell-list>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+    <lol-spell-dialog
+      v-model="dialogSpell.active"
+      @spell-selected="dialogSpell.handleClick"
+    />
+
+    <lol-level-dialog
+      v-model="dialogLevel.active"
+      @level-selected="dialogLevel.handleClick"
+    />
   </div>
 </template>
 
 <script>
 import { find, findIndex } from "lodash";
 import championsData from "@/const/champions.json";
-import spellsData from "@/const/spells.json";
+
 import LolChampionHeader from "@/components/ChampionHeader";
 import LolChampionList from "@/components/ChampionList";
 import LolChampionSpellItem from "@/components/ChampionSpellItem";
 import LolChampionSpellList from "@/components/ChampionSpellList";
-import LolSpellItem from "@/components/SpellItem";
-import LolSpellList from "@/components/SpellList";
 import LolChampionNoItems from "@/components/ChampionNoItems";
+import LolLevelDialog from "@/components/LevelDialog";
+import LolSpellDialog from "@/components/SpellDialog";
 
 export default {
   name: "ChampionSelected",
 
   components: {
     LolChampionHeader,
-    LolSpellItem,
-    LolSpellList,
+
     LolChampionSpellItem,
     LolChampionSpellList,
     LolChampionList,
     LolChampionNoItems,
+    LolLevelDialog,
+    LolSpellDialog,
   },
 
   data() {
     return {
       isLoading: true,
-      spellsData,
       selectedChampions: [],
+      dialogLevel: {
+        active: false,
+        handleClick: () => {},
+      },
       dialogSpell: {
         active: false,
         handleClick: () => {},
@@ -115,6 +129,10 @@ export default {
       ...find(championsData, ["name", key]),
       firstSpell: {},
       secondSpell: {},
+      hasBoots: false,
+      level: 1,
+      interval: null,
+      isRun: false,
     }));
 
     this.isLoading = false;
@@ -150,7 +168,7 @@ export default {
       );
     },
 
-    openSpellModal(championItem, spellKey) {
+    openSpellDialog(championItem, spellKey) {
       const handleClick = (spellItem) => {
         const championIndex = findIndex(this.selectedChampions, [
           "name",
@@ -163,8 +181,6 @@ export default {
 
         this.selectedChampions[championIndex][spellKey] = {
           ...spellItem,
-          interval: null,
-          isRun: false,
           defaultDuration: spellItem.duration,
         };
         this.dialogSpell.active = false;
@@ -185,22 +201,64 @@ export default {
     },
 
     startTimer(championItem, spellKey) {
-      const item = championItem[spellKey];
+      const championIndex = findIndex(this.selectedChampions, [
+        "name",
+        championItem.name,
+      ]);
 
-      if (item.isRun) {
+      if (championIndex == -1) {
+        return;
+      }
+
+      const championSpell = this.selectedChampions[championIndex][spellKey];
+
+      if (championSpell.isRun) {
         this.restartTimer(championItem, spellKey);
         return;
       }
 
-      item.interval = setInterval(() => {
-        item.duration--;
+      let coolDown = 1.0;
 
-        if (item.duration < 0) {
+      if (championItem.hasBoots) {
+        coolDown -= 0.1;
+      }
+
+      championSpell.isRun = true;
+      championSpell.duration *= coolDown;
+
+      if (championSpell.name == "Teleportación") {
+        championSpell.duration -= (championItem.level - 1) * 10;
+      }
+
+      championSpell.duration--;
+
+      championSpell.interval = setInterval(() => {
+        if (championSpell.duration < 0) {
           this.restartTimer(championItem, spellKey);
         }
+        championSpell.duration--;
       }, 1000);
+    },
 
-      item.isRun = true;
+    openLevelDialog(championItem) {
+      const handleClick = (level) => {
+        const championIndex = findIndex(this.selectedChampions, [
+          "name",
+          championItem.name,
+        ]);
+
+        if (championIndex == -1) {
+          return;
+        }
+
+        this.selectedChampions[championIndex].level = level;
+        this.dialogLevel.active = false;
+      };
+
+      this.dialogLevel = {
+        active: true,
+        handleClick,
+      };
     },
   },
 };
@@ -271,5 +329,31 @@ export default {
   @include breakpoint(sm) {
     display: block;
   }
+}
+
+.champion__level {
+  font-size: 22px;
+  font-family: $font2;
+  color: $color_secondary;
+  border: 1px solid $color_primary;
+  height: 32px;
+  width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.champion__boots {
+  min-width: 32px;
+  transition: 0.1s;
+  filter: grayscale(100%);
+  cursor: pointer;
+  border: 1px solid $color_primary;
+  margin-left: 12px;
+}
+
+.champion__boots--active {
+  filter: grayscale(0);
 }
 </style>

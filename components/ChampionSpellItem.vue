@@ -1,8 +1,13 @@
 <template>
   <div
     class="champion__spell_item"
-    :class="classChampionSpellItem"
-    @click="championSpellItem.name ? () => {} : openSpellModal()"
+    :class="[
+      {
+        'champion__spell_item--empty': !championSpellItem.name,
+        'champion__spell_item--run': championSpellItem.isRun,
+      },
+    ]"
+    @click="championSpellItem.name ? () => {} : openSpellDialog()"
   >
     <template v-if="championSpellItem.name">
       <v-img
@@ -21,7 +26,7 @@
         x-small
         block
         class="mt-1 champion__spell_open"
-        @click="openSpellModal"
+        @click="openSpellDialog"
       >
         <v-icon size="16">mdi-pencil-outline</v-icon>
       </v-btn>
@@ -53,25 +58,11 @@ export default {
     championSpellItem() {
       return this.championItem[this.spellPosition];
     },
-
-    classChampionSpellItem() {
-      const classHtml = [];
-
-      if (!this.championSpellItem.name) {
-        classHtml.push("champion__spell_item--empty");
-      }
-
-      if (this.championSpellItem.isRun) {
-        classHtml.push("champion__spell_item--run");
-      }
-
-      return classHtml;
-    },
   },
 
   methods: {
-    openSpellModal() {
-      this.$emit("open-spell-modal", this.championItem, this.spellPosition);
+    openSpellDialog() {
+      this.$emit("open-spell-dialog", this.championItem, this.spellPosition);
     },
 
     startTimer() {
