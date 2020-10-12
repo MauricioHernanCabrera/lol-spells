@@ -28,7 +28,7 @@
 
           <div class="spacer"></div>
 
-          <div class="champion__level" @click="openLevelModal(championItem)">
+          <div class="champion__level" @click="openLevelDialog(championItem)">
             {{ championItem.level }}
           </div>
 
@@ -48,7 +48,7 @@
               :championItem="championItem"
               spellPosition="firstSpell"
               @start-timer="startTimer"
-              @open-spell-modal="openSpellModal"
+              @open-spell-dialog="openSpellDialog"
               class="mr-3"
             />
 
@@ -56,7 +56,7 @@
               :championItem="championItem"
               spellPosition="secondSpell"
               @start-timer="startTimer"
-              @open-spell-modal="openSpellModal"
+              @open-spell-dialog="openSpellDialog"
             />
           </lol-champion-spell-list>
         </div>
@@ -82,22 +82,10 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="dialogLevel.active" width="500">
-      <v-card>
-        <v-card-text class="pt-6">
-          <lol-level-list>
-            <lol-level-item
-              v-for="level in 18"
-              :key="level"
-              :level="level"
-              @click="dialogLevel.handleClick(level)"
-            >
-              {{ level }}
-            </lol-level-item>
-          </lol-level-list>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+    <lol-level-dialog
+      v-model="dialogLevel.active"
+      @level-selected="dialogLevel.handleClick"
+    />
   </div>
 </template>
 
@@ -112,8 +100,7 @@ import LolChampionSpellList from "@/components/ChampionSpellList";
 import LolSpellItem from "@/components/SpellItem";
 import LolSpellList from "@/components/SpellList";
 import LolChampionNoItems from "@/components/ChampionNoItems";
-import LolLevelList from "@/components/LevelList";
-import LolLevelItem from "@/components/LevelItem";
+import LolLevelDialog from "@/components/LevelDialog";
 
 export default {
   name: "ChampionSelected",
@@ -126,8 +113,7 @@ export default {
     LolChampionSpellList,
     LolChampionList,
     LolChampionNoItems,
-    LolLevelList,
-    LolLevelItem,
+    LolLevelDialog,
   },
 
   data() {
@@ -194,7 +180,7 @@ export default {
       );
     },
 
-    openSpellModal(championItem, spellKey) {
+    openSpellDialog(championItem, spellKey) {
       const handleClick = (spellItem) => {
         const championIndex = findIndex(this.selectedChampions, [
           "name",
@@ -249,7 +235,7 @@ export default {
       item.isRun = true;
     },
 
-    openLevelModal(championItem) {
+    openLevelDialog(championItem) {
       const handleClick = (level) => {
         const championIndex = findIndex(this.selectedChampions, [
           "name",
@@ -262,8 +248,6 @@ export default {
 
         this.selectedChampions[championIndex].level = level;
         this.dialogLevel.active = false;
-        console.log(level);
-        console.log(championItem);
       };
 
       this.dialogLevel = {
@@ -366,17 +350,5 @@ export default {
 
 .champion__boots--active {
   filter: grayscale(0);
-}
-
-.level__item {
-  color: $color_secondary;
-  font-size: 32px;
-  font-family: $font2;
-  height: 56px;
-  border: 1px solid $color_primary;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
 }
 </style>

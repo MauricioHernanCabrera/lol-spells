@@ -16,10 +16,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.level__list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(0, 56px));
+@import "./../assets/scss/utils.scss";
+
+.level__item {
+  color: $color_secondary;
+  font-size: 32px;
+  font-family: $font2;
+  height: 56px;
+  border: 1px solid $color_primary;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 12px;
+  cursor: pointer;
 }
 </style>

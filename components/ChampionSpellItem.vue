@@ -2,7 +2,7 @@
   <div
     class="champion__spell_item"
     :class="classChampionSpellItem"
-    @click="championSpellItem.name ? () => {} : openSpellModal()"
+    @click="championSpellItem.name ? () => {} : openSpellDialog()"
   >
     <template v-if="championSpellItem.name">
       <v-img
@@ -21,7 +21,7 @@
         x-small
         block
         class="mt-1 champion__spell_open"
-        @click="openSpellModal"
+        @click="openSpellDialog"
       >
         <v-icon size="16">mdi-pencil-outline</v-icon>
       </v-btn>
@@ -70,8 +70,8 @@ export default {
   },
 
   methods: {
-    openSpellModal() {
-      this.$emit("open-spell-modal", this.championItem, this.spellPosition);
+    openSpellDialog() {
+      this.$emit("open-spell-dialog", this.championItem, this.spellPosition);
     },
 
     startTimer() {
