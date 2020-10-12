@@ -59,7 +59,7 @@
             <lol-spell-item
               v-for="spellItem in spellsData"
               :key="spellItem.name"
-              :icon="spellItem.icon"
+              :icon="`${$router.history.base}${spellItem.icon}`"
               @click="dialogSpell.handleClick(spellItem)"
             />
           </lol-spell-list>
@@ -148,10 +148,7 @@ export default {
     },
 
     openSpellModal(championItem, spellKey) {
-      console.log(championItem, spellKey);
-
       const handleClick = (spellItem) => {
-        console.log(spellItem);
         const championIndex = findIndex(this.selectedChampions, [
           "name",
           championItem.name,
@@ -168,7 +165,6 @@ export default {
           defaultDuration: spellItem.duration,
         };
         this.dialogSpell.active = false;
-        console.log(this.selectedChampions[championIndex][spellKey]);
       };
 
       this.dialogSpell = {
@@ -199,8 +195,6 @@ export default {
         if (item.duration < 0) {
           this.restartTimer(championItem, spellKey);
         }
-
-        console.log(item.duration);
       }, 1000);
 
       item.isRun = true;
