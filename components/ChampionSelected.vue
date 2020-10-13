@@ -80,6 +80,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { find, findIndex } from "lodash";
 import championsData from "@/const/champions.json";
 
@@ -118,6 +119,10 @@ export default {
         handleClick: () => {},
       },
     };
+  },
+
+  computed: {
+    ...mapState(["selectedChampions"]),
   },
 
   mounted() {
