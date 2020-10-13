@@ -142,7 +142,9 @@ export const actions = {
         JSON.stringify(championItem[spellPosition])
       );
 
-      if (championSpellItem.duration <= 0) {
+      const duration = championSpellItem.duration - 1;
+
+      if (duration <= 0) {
         return dispatch("restartTimer", { championId, spellPosition });
       }
 
@@ -151,7 +153,7 @@ export const actions = {
         champion: {
           [spellPosition]: {
             ...championSpellItem,
-            duration: championSpellItem.duration - 1
+            duration
           }
         }
       });
