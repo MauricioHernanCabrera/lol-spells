@@ -2,51 +2,61 @@
   {
     "icon": "/images/spells/heal.png",
     "name": "Curación",
-    "duration": 240
+    "duration": 240,
+    "id": "heal"
   },
   {
     "icon": "/images/spells/ghost.png",
     "name": "Fantasma",
-    "duration": 210
+    "duration": 210,
+    "id": "ghost"
   },
   {
     "icon": "/images/spells/barrier.png",
     "name": "Barrera",
-    "duration": 180
+    "duration": 180,
+    "id": "barrier"
   },
   {
     "icon": "/images/spells/exhaust.png",
     "name": "Extenuación",
-    "duration": 210
+    "duration": 210,
+    "id": "exhaust"
   },
   {
     "icon": "/images/spells/clarity.png",
     "name": "Claridad",
-    "duration": 240
+    "duration": 240,
+    "id": "clarity"
   },
   {
     "icon": "/images/spells/flash.png",
     "name": "Destello",
-    "duration": 300
+    "duration": 300,
+    "id": "flash"
   },
   {
     "icon": "/images/spells/teleport.png",
     "name": "Teleportación",
-    "duration": 400
+    "duration": 400,
+    "id": "teleport"
   },
   {
     "icon": "/images/spells/smite.png",
     "name": "Castigo",
-    "duration": 15
+    "duration": 15,
+    "id": "smite"
   },
   {
     "icon": "/images/spells/ignite.png",
     "name": "Ignición",
-    "duration": 180
+    "duration": 180,
+    "id": "ignite"
   },
   {
     "icon": "/images/spells/cleanse.png",
     "name": "Purificación",
-    "duration": 210
+    "duration": 210,
+    "id": "cleanse"
   }
 ]

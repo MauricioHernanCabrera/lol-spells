@@ -62,11 +62,17 @@ export default {
 
   methods: {
     openSpellDialog() {
-      this.$emit("open-spell-dialog", this.championItem, this.spellPosition);
+      this.$emit("open-spell-dialog", {
+        championId: this.championItem.id,
+        spellPosition: this.spellPosition,
+      });
     },
 
     startTimer() {
-      this.$emit("start-timer", this.championItem, this.spellPosition);
+      this.$emit("start-timer", {
+        championId: this.championItem.id,
+        spellPosition: this.spellPosition,
+      });
     },
   },
 

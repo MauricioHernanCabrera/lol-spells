@@ -11,11 +11,11 @@
     <v-expand-transition>
       <lol-champion-list
         v-show="
-          (championName.length > 0 || expanded) && championsFiltered.length > 0
+          (championName.length > 0 || expanded) && championsMap.length > 0
         "
       >
         <lol-champion-item
-          v-for="championItem in championsFiltered"
+          v-for="championItem in championsMap"
           :key="championItem.name"
           :selected="championItem.selected"
           :background="championItem.background"
@@ -28,7 +28,7 @@
     </v-expand-transition>
 
     <lol-champion-no-items
-      v-show="championName.length > 0 && championsFiltered.length == 0"
+      v-show="championName.length > 0 && championsMap.length == 0"
     >
       No se encontraron campeones
     </lol-champion-no-items>
@@ -47,6 +47,7 @@ import LolChampionSearch from "@/components/ChampionSearch";
 import LolChampionList from "@/components/ChampionList";
 import LolChampionItem from "@/components/ChampionItem";
 import LolChampionNoItems from "@/components/ChampionNoItems";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   name: "Champion",
@@ -61,40 +62,20 @@ export default {
 
   data() {
     return {
-      champions: [],
+      champions: championsData,
       championName: "",
       expanded: true,
       isLoading: true,
-      selectedChampions: {},
     };
   },
 
   mounted() {
-    this.selectedChampions =
-      JSON.parse(localStorage.getItem("selectedChampions")) || {};
-
-    this.champions = championsData.map((championItem) => {
-      const selected = this.selectedChampions.hasOwnProperty(championItem.name);
-
-      return {
-        ...championItem,
-        selected,
-      };
-    });
-
     this.isLoading = false;
   },
 
-  watch: {
-    selectedChampions: {
-      handler(newValue) {
-        localStorage.setItem("selectedChampions", JSON.stringify(newValue));
-      },
-      deep: true,
-    },
-  },
-
   computed: {
+    ...mapState(["selectedChampions"]),
+
     championsFiltered() {
       const championNameLower = this.championName.toLowerCase();
 
@@ -103,32 +84,40 @@ export default {
       );
     },
 
+    championsMap() {
+      return this.championsFiltered.map((championItem) => ({
+        ...championItem,
+        selected: this.selectedChampions.some(
+          ({ championId }) => championId == championItem.id
+        ),
+      }));
+    },
+
     hasSelectedChampions() {
-      return this.champions.some(({ selected }) => selected);
+      return this.selectedChampions.length > 0;
     },
   },
 
   methods: {
+    ...mapMutations(["ADD_SELECTED_CHAMPION", "REMOVE_SELECTED_CHAMPION"]),
+
     toggleChampion(championName) {
-      const championIndex = findIndex(this.champions, ["name", championName]);
+      const championIndex = findIndex(this.championsMap, [
+        "name",
+        championName,
+      ]);
 
       if (championIndex == -1) {
         return;
       }
 
-      const champion = this.champions[championIndex];
-      champion.selected = !champion.selected;
+      const champion = this.championsMap[championIndex];
 
       if (champion.selected) {
-        this.selectedChampions = {
-          ...this.selectedChampions,
-          [champion.name]: "_",
-        };
-        return;
+        this.REMOVE_SELECTED_CHAMPION(champion.id);
+      } else {
+        this.ADD_SELECTED_CHAMPION({ championId: champion.id });
       }
-
-      delete this.selectedChampions[champion.name];
-      this.selectedChampions = { ...this.selectedChampions };
     },
   },
 };
