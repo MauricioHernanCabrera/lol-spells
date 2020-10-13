@@ -95,7 +95,7 @@ export default {
     },
 
     hasSelectedChampions() {
-      return this.champions.some(({ selected }) => selected);
+      return this.selectedChampions.length > 0;
     },
   },
 

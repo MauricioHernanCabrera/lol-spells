@@ -2,10 +2,10 @@
   <div v-show="!isLoading">
     <lol-champion-header title="LOL SPELLS" subtitle="Selecciona hechizos" />
 
-    <lol-champion-list v-show="selectedChampions.length > 0">
+    <lol-champion-list v-show="selectedChampionsMap.length > 0">
       <li
         class="champion__item"
-        v-for="championItem in selectedChampions"
+        v-for="championItem in selectedChampionsMap"
         :key="championItem.name"
       >
         <div
@@ -20,7 +20,7 @@
             class="champion__icon"
             :aspect-ratio="1"
             :src="`${$router.history.base}${championItem.icon}`"
-            @click="removeSelectedChampion(championItem.name)"
+            @click="removeSelectedChampion({ championId: championItem.id })"
           >
           </v-img>
 
@@ -28,14 +28,17 @@
 
           <div class="spacer"></div>
 
-          <div class="champion__level" @click="openLevelDialog(championItem)">
+          <div
+            class="champion__level"
+            @click="openLevelDialog(championItem.id)"
+          >
             {{ championItem.level }}
           </div>
 
           <div
             class="champion__boots"
             :class="[{ 'champion__boots--active': championItem.hasBoots }]"
-            @click="championItem.hasBoots = !championItem.hasBoots"
+            @click="toggleBoots(championItem.id)"
           >
             <v-img
               :src="`${$router.history.base}/images/items/boots.png`"
@@ -63,7 +66,7 @@
       </li>
     </lol-champion-list>
 
-    <lol-champion-no-items v-show="selectedChampions.length == 0">
+    <lol-champion-no-items v-show="selectedChampionsMap.length == 0">
       No se encontraron campeones
     </lol-champion-no-items>
 
@@ -80,7 +83,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 import { find, findIndex } from "lodash";
 import championsData from "@/const/champions.json";
 
@@ -109,7 +112,6 @@ export default {
   data() {
     return {
       isLoading: true,
-      selectedChampions: [],
       dialogLevel: {
         active: false,
         handleClick: () => {},
@@ -123,71 +125,67 @@ export default {
 
   computed: {
     ...mapState(["selectedChampions"]),
+
+    championsDataObject() {
+      return championsData.reduce(
+        (ant, act) => ({
+          ...ant,
+          [act.id]: act,
+        }),
+        {}
+      );
+    },
+
+    selectedChampionsMap() {
+      return this.selectedChampions.map((selectedChampionItem) => ({
+        ...selectedChampionItem,
+        ...this.championsDataObject[selectedChampionItem.championId],
+      }));
+    },
   },
 
   mounted() {
-    const selectedChampionsKeys = Object.keys(
-      JSON.parse(localStorage.getItem("selectedChampions")) || {}
-    );
-
-    this.selectedChampions = selectedChampionsKeys.map((key) => ({
-      ...find(championsData, ["name", key]),
-      firstSpell: {},
-      secondSpell: {},
-      hasBoots: false,
-      level: 1,
-      interval: null,
-      isRun: false,
-    }));
-
     this.isLoading = false;
   },
 
   methods: {
-    removeSelectedChampion(championName) {
-      const championIndex = findIndex(this.selectedChampions, [
-        "name",
-        championName,
+    ...mapActions(["restartTimer", "removeSelectedChampion", "startTimer"]),
+
+    ...mapMutations(["UPDATE_SELECTED_CHAMPION"]),
+
+    toggleBoots(championId) {
+      const championItem = find(this.selectedChampions, [
+        "championId",
+        championId,
       ]);
 
-      if (championIndex == -1) {
-        return;
-      }
-
-      if (this.selectedChampions[championIndex].firstSpell) {
-        this.restartTimer(this.selectedChampions[championIndex], "firstSpell");
-      }
-
-      if (this.selectedChampions[championIndex].firstSpell) {
-        this.restartTimer(this.selectedChampions[championIndex], "secondSpell");
-      }
-
-      this.selectedChampions.splice(championIndex, 1);
-
-      const selectedChampionsStorage =
-        JSON.parse(localStorage.getItem("selectedChampions")) || {};
-      delete selectedChampionsStorage[championName];
-      localStorage.setItem(
-        "selectedChampions",
-        JSON.stringify(selectedChampionsStorage)
-      );
+      this.UPDATE_SELECTED_CHAMPION({
+        championId,
+        champion: {
+          hasBoots: !championItem.hasBoots,
+        },
+      });
     },
 
-    openSpellDialog(championItem, spellKey) {
+    openSpellDialog({ championId, spellPosition }) {
       const handleClick = (spellItem) => {
-        const championIndex = findIndex(this.selectedChampions, [
-          "name",
-          championItem.name,
+        const championItem = find(this.selectedChampions, [
+          "championId",
+          championId,
         ]);
 
-        if (championIndex == -1) {
-          return;
-        }
-
-        this.selectedChampions[championIndex][spellKey] = {
+        const championSpellItem = {
           ...spellItem,
           defaultDuration: spellItem.duration,
         };
+
+        this.UPDATE_SELECTED_CHAMPION({
+          championId,
+          champion: {
+            [spellPosition]: championSpellItem,
+          },
+        });
+
         this.dialogSpell.active = false;
       };
 
@@ -197,66 +195,20 @@ export default {
       };
     },
 
-    restartTimer(championItem, spellKey) {
-      const item = championItem[spellKey];
-      clearInterval(item.interval);
-      item.interval = null;
-      item.duration = item.defaultDuration;
-      item.isRun = false;
-    },
-
-    startTimer(championItem, spellKey) {
-      const championIndex = findIndex(this.selectedChampions, [
-        "name",
-        championItem.name,
-      ]);
-
-      if (championIndex == -1) {
-        return;
-      }
-
-      const championSpell = this.selectedChampions[championIndex][spellKey];
-
-      if (championSpell.isRun) {
-        this.restartTimer(championItem, spellKey);
-        return;
-      }
-
-      let coolDown = 1.0;
-
-      if (championItem.hasBoots) {
-        coolDown -= 0.1;
-      }
-
-      championSpell.isRun = true;
-      championSpell.duration *= coolDown;
-
-      if (championSpell.name == "Teleportación") {
-        championSpell.duration -= (championItem.level - 1) * 10;
-      }
-
-      championSpell.duration--;
-
-      championSpell.interval = setInterval(() => {
-        if (championSpell.duration < 0) {
-          this.restartTimer(championItem, spellKey);
-        }
-        championSpell.duration--;
-      }, 1000);
-    },
-
-    openLevelDialog(championItem) {
+    openLevelDialog(championId) {
       const handleClick = (level) => {
-        const championIndex = findIndex(this.selectedChampions, [
-          "name",
-          championItem.name,
+        const championItem = find(this.selectedChampions, [
+          "championId",
+          championId,
         ]);
 
-        if (championIndex == -1) {
-          return;
-        }
+        this.UPDATE_SELECTED_CHAMPION({
+          championId,
+          champion: {
+            level,
+          },
+        });
 
-        this.selectedChampions[championIndex].level = level;
         this.dialogLevel.active = false;
       };
 
