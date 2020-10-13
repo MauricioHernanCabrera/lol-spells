@@ -88,8 +88,7 @@ export default {
       return this.championsFiltered.map((championItem) => ({
         ...championItem,
         selected: this.selectedChampions.some(
-          (selectedChampionId) =>
-            selectedChampionId.championId == championItem.id
+          ({ championId }) => championId == championItem.id
         ),
       }));
     },
@@ -103,21 +102,22 @@ export default {
     ...mapMutations(["ADD_SELECTED_CHAMPION", "REMOVE_SELECTED_CHAMPION"]),
 
     toggleChampion(championName) {
-      const championIndex = findIndex(this.champions, ["name", championName]);
+      const championIndex = findIndex(this.championsMap, [
+        "name",
+        championName,
+      ]);
 
       if (championIndex == -1) {
         return;
       }
 
-      const champion = this.champions[championIndex];
-      champion.selected = !champion.selected;
+      const champion = this.championsMap[championIndex];
 
       if (champion.selected) {
-        this.ADD_SELECTED_CHAMPION(champion.id);
-        return;
+        this.REMOVE_SELECTED_CHAMPION(champion.id);
+      } else {
+        this.ADD_SELECTED_CHAMPION({ championId: champion.id });
       }
-
-      this.REMOVE_SELECTED_CHAMPION(champion.id);
     },
   },
 };

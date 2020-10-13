@@ -7,15 +7,19 @@ export const state = () => ({
 export const getters = {};
 
 export const mutations = {
-  ADD_SELECTED_CHAMPION: (state, championId) => {
+  SET_SELECTED_CHAMPIONS: (state, selectedChampions) => {
+    state.selectedChampions = selectedChampions;
+  },
+
+  ADD_SELECTED_CHAMPION: (state, champion) => {
     state.selectedChampions.push({
-      championId,
       firstSpell: {},
       secondSpell: {},
       level: 1,
       hasBoots: false,
       interval: null,
-      isRun: false
+      isRun: false,
+      ...champion
     });
   },
 
@@ -33,6 +37,7 @@ export const mutations = {
     clone.splice(championIndex, 1);
 
     state.selectedChampions = clone;
+    console.log(state.selectedChampions);
   },
 
   UPDATE_SELECTED_CHAMPION(state, { championId, champion }) {
