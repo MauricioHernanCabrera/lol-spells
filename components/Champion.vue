@@ -47,7 +47,7 @@ import LolChampionSearch from "@/components/ChampionSearch";
 import LolChampionList from "@/components/ChampionList";
 import LolChampionItem from "@/components/ChampionItem";
 import LolChampionNoItems from "@/components/ChampionNoItems";
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 
 export default {
   name: "Champion",
@@ -99,7 +99,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["ADD_SELECTED_CHAMPION", "REMOVE_SELECTED_CHAMPION"]),
+    ...mapActions(["removeSelectedChampion", "addSelectedChampion"]),
 
     toggleChampion(championName) {
       const championIndex = findIndex(this.championsMap, [
@@ -114,9 +114,9 @@ export default {
       const champion = this.championsMap[championIndex];
 
       if (champion.selected) {
-        this.REMOVE_SELECTED_CHAMPION(champion.id);
+        this.removeSelectedChampion(champion.id);
       } else {
-        this.ADD_SELECTED_CHAMPION({ championId: champion.id });
+        this.addSelectedChampion({ championId: champion.id });
       }
     },
   },

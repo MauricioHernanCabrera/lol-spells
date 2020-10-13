@@ -37,7 +37,6 @@ export const mutations = {
     clone.splice(championIndex, 1);
 
     state.selectedChampions = clone;
-    console.log(state.selectedChampions);
   },
 
   UPDATE_SELECTED_CHAMPION(state, { championId, champion }) {
@@ -82,7 +81,7 @@ export const actions = {
     });
   },
 
-  removeSelectedChampion({ state, commit, dispatch }, { championId }) {
+  removeSelectedChampion({ state, commit, dispatch }, championId) {
     const championItem = find(state.selectedChampions, [
       "championId",
       championId
@@ -96,7 +95,7 @@ export const actions = {
       dispatch("restartTimer", { championId, spellPosition: "secondSpell" });
     }
 
-    commit("REMOVE_SELECTED_CHAMPION", { championId });
+    commit("REMOVE_SELECTED_CHAMPION", championId);
   },
 
   startTimer({ state, commit, dispatch }, { championId, spellPosition }) {
@@ -164,5 +163,17 @@ export const actions = {
         [spellPosition]: championSpellItem
       }
     });
+  },
+
+  addSelectedChampion({ commit }, champion) {
+    commit("ADD_SELECTED_CHAMPION", champion);
+  },
+
+  setSelectedChampions({ commit }, selectedChampions) {
+    commit("SET_SELECTED_CHAMPIONS", selectedChampions);
+  },
+
+  updateSelectedChampion({ commit }, payload) {
+    commit("UPDATE_SELECTED_CHAMPION", payload);
   }
 };

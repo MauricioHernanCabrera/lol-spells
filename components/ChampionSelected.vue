@@ -20,7 +20,7 @@
             class="champion__icon"
             :aspect-ratio="1"
             :src="`${$router.history.base}${championItem.icon}`"
-            @click="removeSelectedChampion({ championId: championItem.id })"
+            @click="removeSelectedChampion(championItem.championId)"
           >
           </v-img>
 
@@ -149,9 +149,12 @@ export default {
   },
 
   methods: {
-    ...mapActions(["restartTimer", "removeSelectedChampion", "startTimer"]),
-
-    ...mapMutations(["UPDATE_SELECTED_CHAMPION"]),
+    ...mapActions([
+      "restartTimer",
+      "removeSelectedChampion",
+      "startTimer",
+      "updateSelectedChampion",
+    ]),
 
     toggleBoots(championId) {
       const championItem = find(this.selectedChampions, [
@@ -159,7 +162,7 @@ export default {
         championId,
       ]);
 
-      this.UPDATE_SELECTED_CHAMPION({
+      this.updateSelectedChampion({
         championId,
         champion: {
           hasBoots: !championItem.hasBoots,
@@ -179,7 +182,7 @@ export default {
           defaultDuration: spellItem.duration,
         };
 
-        this.UPDATE_SELECTED_CHAMPION({
+        this.updateSelectedChampion({
           championId,
           champion: {
             [spellPosition]: championSpellItem,
@@ -202,7 +205,7 @@ export default {
           championId,
         ]);
 
-        this.UPDATE_SELECTED_CHAMPION({
+        this.updateSelectedChampion({
           championId,
           champion: {
             level,

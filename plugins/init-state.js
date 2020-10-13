@@ -3,9 +3,7 @@ export default ({ app, store }) => {
     const { selectedChampions = [] } =
       JSON.parse(localStorage.getItem("data")) || {};
 
-    selectedChampions.forEach(selectedChampion =>
-      store.commit("ADD_SELECTED_CHAMPION", selectedChampion)
-    );
+    store.dispatch("setSelectedChampions", selectedChampions);
 
     store.subscribe(() => {
       localStorage.setItem("data", JSON.stringify(store.state));
