@@ -142,8 +142,8 @@ export const actions = {
         JSON.stringify(championItem[spellPosition])
       );
 
-      if (championSpellItem.duration < 0) {
-        dispatch("restartTimer", { championId, spellPosition });
+      if (championSpellItem.duration <= 0) {
+        return dispatch("restartTimer", { championId, spellPosition });
       }
 
       commit("UPDATE_SELECTED_CHAMPION", {

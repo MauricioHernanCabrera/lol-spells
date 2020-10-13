@@ -2,7 +2,7 @@
   {
     "icon": "/images/spells/heal.png",
     "name": "Curación",
-    "duration": 240,
+    "duration": 10,
     "id": "heal"
   },
   {
