@@ -7,6 +7,7 @@
       placeholder="Nombre del campeon ..."
       @input="$emit('input', $event.target.value)"
       :value="value"
+      autocomplete="off"
     />
 
     <div class="champion__search_icon">
