@@ -200,21 +200,14 @@ export default {
       this.setSelectedChampions([]);
 
       const sharedChampions = championList.map((championId, championIndex) => {
-        const [
-          firstSpellId,
-          secondSpellId,
-          firstSpell,
-          secondSpell,
-          hasBoots,
-          level,
-        ] = [
-          firstSpellList[championIndex],
-          secondSpellList[championIndex],
-          this.spellsDataObject[firstSpellId] || {},
-          this.spellsDataObject[secondSpellId] || {},
-          hasBootList[championIndex] == 1 ? true : false,
-          levelList[championIndex] ? parseInt(levelList[championIndex]) : 1,
-        ];
+        const firstSpellId = firstSpellList[championIndex];
+        const secondSpellId = secondSpellList[championIndex];
+        const firstSpell = this.spellsDataObject[firstSpellId] || {};
+        const secondSpell = this.spellsDataObject[secondSpellId] || {};
+        const hasBoots = hasBootList[championIndex] == 1 ? true : false;
+        const level = levelList[championIndex]
+          ? parseInt(levelList[championIndex])
+          : 1;
 
         return {
           championId,
