@@ -91,9 +91,14 @@ export default {
 @import "./../assets/scss/utils.scss";
 
 .champion__spell_item {
-  width: 64px;
-  min-height: 64px;
+  width: 48px;
+  min-height: 48px;
   position: relative;
+
+  @include breakpoint(sm) {
+    width: 64px;
+    min-height: 64px;
+  }
 }
 
 .champion__spell_item:not(.champion__spell_item--empty) {

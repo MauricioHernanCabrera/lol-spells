@@ -260,16 +260,25 @@ export default {
   height: 100%;
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 6px;
   width: 100%;
+
+  @include breakpoint(sm) {
+    padding: 12px;
+  }
 }
 
 .champion__icon {
   border: 1px solid $color_primary;
-  min-width: 64px;
-  max-width: 64px;
   align-self: flex-start;
   cursor: pointer;
+  min-width: 48px;
+  max-width: 48px;
+
+  @include breakpoint(sm) {
+    min-width: 64px;
+    max-width: 64px;
+  }
 
   &:hover {
     filter: grayscale(100%);
@@ -281,13 +290,14 @@ export default {
 }
 
 .champion__name {
-  margin-left: 12px;
   font-size: 18px;
   display: none;
   align-self: flex-start;
+  margin-left: 6px;
 
   @include breakpoint(sm) {
     display: block;
+    margin-left: 12px;
   }
 }
 
@@ -302,15 +312,26 @@ export default {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+
+  @include breakpoint(sm) {
+    height: 48px;
+    width: 56px;
+    font-size: 28px;
+  }
 }
 
 .champion__boots {
-  min-width: 32px;
   transition: 0.1s;
   filter: grayscale(100%);
   cursor: pointer;
   border: 1px solid $color_primary;
-  margin-left: 12px;
+  margin-left: 6px;
+  min-width: 32px;
+
+  @include breakpoint(sm) {
+    min-width: 48px;
+    margin-left: 12px;
+  }
 }
 
 .champion__boots--active {
