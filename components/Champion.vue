@@ -3,7 +3,8 @@
     <lol-champion-header title="LOL SPELLS" subtitle="Selecciona campeones" />
 
     <lol-champion-search
-      v-model="championName"
+      :value="championSearch"
+      @input="setChampionSearch"
       :expanded="expanded"
       @toggle-expanded="expanded = !expanded"
     />
@@ -11,16 +12,17 @@
     <v-expand-transition>
       <lol-champion-list
         v-show="
-          (championName.length > 0 || expanded) && championsMap.length > 0
+          (championSearch.length > 0 || expanded) && championsMap.length > 0
         "
       >
         <lol-champion-item
           v-for="championItem in championsMap"
-          :key="championItem.name"
+          :key="championItem.id"
           :selected="championItem.selected"
           :background="championItem.background"
           :icon="championItem.icon"
           :name="championItem.name"
+          :id="championItem.id"
           @toggle-champion="toggleChampion"
         >
         </lol-champion-item>
@@ -28,7 +30,7 @@
     </v-expand-transition>
 
     <lol-champion-no-items
-      v-show="championName.length > 0 && championsMap.length == 0"
+      v-show="championSearch.length > 0 && championsMap.length == 0"
     >
       No se encontraron campeones
     </lol-champion-no-items>
@@ -65,7 +67,6 @@ export default {
   data() {
     return {
       champions: championsData,
-      championName: "",
       expanded: true,
       isLoading: true,
     };
@@ -76,13 +77,13 @@ export default {
   },
 
   computed: {
-    ...mapState(["selectedChampions"]),
+    ...mapState(["selectedChampions", "championSearch"]),
 
     championsFiltered() {
-      const championNameLower = this.championName.toLowerCase();
+      const championSearchLower = this.championSearch.toLowerCase();
 
       return this.champions.filter(({ name }) =>
-        name.toLowerCase().includes(championNameLower)
+        name.toLowerCase().includes(championSearchLower)
       );
     },
 
@@ -101,28 +102,12 @@ export default {
   },
 
   methods: {
-    ...mapActions(["removeSelectedChampion", "addSelectedChampion"]),
-
-    toggleChampion(championName) {
-      const championIndex = findIndex(this.championsMap, [
-        "name",
-        championName,
-      ]);
-
-      if (championIndex == -1) {
-        return;
-      }
-
-      const champion = this.championsMap[championIndex];
-
-      if (champion.selected) {
-        this.removeSelectedChampion(champion.id);
-      } else {
-        this.addSelectedChampion({ championId: champion.id });
-      }
-
-      this.championName = "";
-    },
+    ...mapActions([
+      "removeSelectedChampion",
+      "addSelectedChampion",
+      "toggleChampion",
+      "setChampionSearch",
+    ]),
   },
 };
 </script>

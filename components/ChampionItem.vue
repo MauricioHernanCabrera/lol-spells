@@ -2,7 +2,7 @@
   <li
     class="champion__item"
     :class="[{ 'champion__item--selected': selected }]"
-    @click="$emit('toggle-champion', name)"
+    @click="$emit('toggle-champion', id)"
   >
     <div
       :style="{
@@ -34,6 +34,10 @@ export default {
       required: true,
     },
     name: {
+      type: String,
+      required: true,
+    },
+    id: {
       type: String,
       required: true,
     },

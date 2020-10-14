@@ -1,7 +1,8 @@
 import { findIndex, find } from "lodash";
 
 export const state = () => ({
-  selectedChampions: []
+  selectedChampions: [],
+  championSearch: ""
 });
 
 export const getters = {};
@@ -56,6 +57,10 @@ export const mutations = {
     };
 
     state.selectedChampions = clone;
+  },
+
+  SET_CHAMPION_SEARCH: (state, championSearch) => {
+    state.championSearch = championSearch;
   }
 };
 
@@ -177,5 +182,23 @@ export const actions = {
 
   updateSelectedChampion({ commit }, payload) {
     commit("UPDATE_SELECTED_CHAMPION", payload);
+  },
+
+  toggleChampion({ state, dispatch }, championId) {
+    const selected = state.selectedChampions.some(
+      selectedChampion => selectedChampion.championId === championId
+    );
+
+    if (selected) {
+      dispatch("removeSelectedChampion", championId);
+    } else {
+      dispatch("addSelectedChampion", { championId });
+    }
+
+    dispatch("setChampionSearch", "");
+  },
+
+  setChampionSearch({ commit }, championSearch) {
+    commit("SET_CHAMPION_SEARCH", championSearch);
   }
 };
