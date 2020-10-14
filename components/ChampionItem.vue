@@ -60,6 +60,11 @@ export default {
   overflow: hidden;
   display: flex;
   align-items: center;
+  min-height: 66px;
+
+  @include breakpoint(sm) {
+    min-height: 96.8px;
+  }
 }
 
 .champion__item--selected {
