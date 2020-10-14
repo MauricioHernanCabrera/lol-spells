@@ -1,4 +1,5 @@
 import { findIndex, find } from "lodash";
+import spellsData from "@/const/spells.json";
 
 export const state = () => ({
   selectedChampions: [],
@@ -71,12 +72,19 @@ export const actions = {
       championId
     ]);
 
+    if (!championItem) {
+      return;
+    }
+
     const championSpellItem = { ...championItem[spellPosition] };
 
     clearInterval(championSpellItem.interval);
     championSpellItem.interval = null;
     championSpellItem.isRun = false;
-    championSpellItem.duration = championSpellItem.defaultDuration;
+
+    const spellItem = find(spellsData, ["id", championSpellItem.id]);
+
+    championSpellItem.duration = spellItem.duration;
 
     commit("UPDATE_SELECTED_CHAMPION", {
       championId,
@@ -92,11 +100,11 @@ export const actions = {
       championId
     ]);
 
-    if (championItem.firstSpell) {
+    if (championItem.firstSpell && championItem.firstSpell.duration) {
       dispatch("restartTimer", { championId, spellPosition: "firstSpell" });
     }
 
-    if (championItem.secondSpell) {
+    if (championItem.secondSpell && championItem.secondSpell.duration) {
       dispatch("restartTimer", { championId, spellPosition: "secondSpell" });
     }
 

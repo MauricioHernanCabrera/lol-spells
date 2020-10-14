@@ -86,6 +86,7 @@
 import { mapState, mapMutations, mapActions } from "vuex";
 import { find, findIndex } from "lodash";
 import championsData from "@/const/champions.json";
+import spellsData from "@/const/spells.json";
 
 import LolChampionHeader from "@/components/ChampionHeader";
 import LolChampionList from "@/components/ChampionList";
@@ -136,6 +137,16 @@ export default {
       );
     },
 
+    spellsDataObject() {
+      return spellsData.reduce(
+        (ant, act) => ({
+          ...ant,
+          [act.id]: act,
+        }),
+        {}
+      );
+    },
+
     selectedChampionsMap() {
       return this.selectedChampions.map((selectedChampionItem) => ({
         ...selectedChampionItem,
@@ -145,6 +156,7 @@ export default {
   },
 
   mounted() {
+    this.loadSharedChampions();
     this.isLoading = false;
   },
 
@@ -154,7 +166,69 @@ export default {
       "removeSelectedChampion",
       "startTimer",
       "updateSelectedChampion",
+      "addSelectedChampion",
+      "setSelectedChampions",
     ]),
+
+    loadSharedChampions() {
+      const {
+        champions,
+        firstSpells,
+        secondSpells,
+        hasBoots,
+        levels,
+      } = this.$route.query;
+
+      const [
+        championList,
+        firstSpellList,
+        secondSpellList,
+        hasBootList,
+        levelList,
+      ] = [
+        champions ? champions.split(",") : [],
+        firstSpells ? firstSpells.split(",") : [],
+        secondSpells ? secondSpells.split(",") : [],
+        hasBoots ? hasBoots.split(",") : [],
+        levels ? levels.split(",") : [],
+      ];
+
+      if (championList.length == 0) {
+        return;
+      }
+
+      this.setSelectedChampions([]);
+
+      const sharedChampions = championList.map((championId, championIndex) => {
+        const [
+          firstSpellId,
+          secondSpellId,
+          firstSpell,
+          secondSpell,
+          hasBoots,
+          level,
+        ] = [
+          firstSpellList[championIndex],
+          secondSpellList[championIndex],
+          this.spellsDataObject[firstSpellId] || {},
+          this.spellsDataObject[secondSpellId] || {},
+          hasBootList[championIndex] == 1 ? true : false,
+          levelList[championIndex] ? parseInt(levelList[championIndex]) : 1,
+        ];
+
+        return {
+          championId,
+          firstSpell,
+          secondSpell,
+          hasBoots,
+          level,
+        };
+      });
+
+      sharedChampions.forEach((sharedChampion) => {
+        this.addSelectedChampion(sharedChampion);
+      });
+    },
 
     toggleBoots(championId) {
       const championItem = find(this.selectedChampions, [
@@ -177,10 +251,7 @@ export default {
           championId,
         ]);
 
-        const championSpellItem = {
-          ...spellItem,
-          defaultDuration: spellItem.duration,
-        };
+        const championSpellItem = { ...spellItem };
 
         this.updateSelectedChampion({
           championId,
