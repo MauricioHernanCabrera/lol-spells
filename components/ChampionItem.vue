@@ -58,7 +58,6 @@ export default {
   transition: 0.3s;
   cursor: pointer;
   overflow: hidden;
-  min-height: 90px;
   display: flex;
   align-items: center;
 }
@@ -89,13 +88,23 @@ export default {
   height: 100%;
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 6px;
+
+  @include breakpoint(sm) {
+    padding: 12px;
+  }
 }
 
 .champion__icon {
   border: 1px solid $color_primary;
-  height: 64px;
-  width: 64px;
+  height: 48px;
+  width: 48px;
+  background-size: contain;
+
+  @include breakpoint(sm) {
+    height: 64px;
+    width: 64px;
+  }
 }
 
 .champion__name {
