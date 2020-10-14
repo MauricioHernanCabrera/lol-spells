@@ -54,7 +54,11 @@ export default {
 
 .champion__search {
   position: relative;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
+
+  @include breakpoint(sm) {
+    margin-bottom: 24px;
+  }
 }
 
 .champion__search_label {
@@ -63,21 +67,30 @@ export default {
 .champion__search_input {
   width: 100%;
   color: $color_light;
-  height: 64px;
   border: 1px solid $color_primary;
-  padding: 0 24px;
+  padding: 0 18px;
   outline: none;
+  height: 48px;
 
   &:focus {
     border-color: $color_secondary2;
+  }
+
+  @include breakpoint(sm) {
+    padding: 0 24px;
+    height: 64px;
   }
 }
 
 .champion__search_icon {
   position: absolute;
   top: 50%;
-  right: 24px;
+  right: 12px;
   transform: translateY(-50%);
   cursor: pointer;
+
+  @include breakpoint(sm) {
+    right: 24px;
+  }
 }
 </style>
