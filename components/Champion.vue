@@ -34,7 +34,9 @@
     </lol-champion-no-items>
 
     <div class="champion__floating_button" v-show="hasSelectedChampions">
-      <v-btn to="/selected">Ir a la partida</v-btn>
+      <v-btn to="/selected">
+        Ir a la partida ({{ selectedChampions.length }})
+      </v-btn>
     </div>
   </div>
 </template>
@@ -118,6 +120,8 @@ export default {
       } else {
         this.addSelectedChampion({ championId: champion.id });
       }
+
+      this.championName = "";
     },
   },
 };
