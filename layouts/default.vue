@@ -11,9 +11,9 @@
       </v-btn>
     </v-toolbar>
 
-    <v-content>
+    <v-main>
       <nuxt />
-    </v-content>
+    </v-main>
 
     <input type="text" value="" class="copy_clipboard" id="copyClipboard" />
   </v-app>
