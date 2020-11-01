@@ -309,8 +309,6 @@ export default {
           position: clone[championIndex].position
         },
       });
-
-      console.log(this.selectedChampions)
     }
   },
 };
