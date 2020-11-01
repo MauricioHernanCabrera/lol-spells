@@ -1,6 +1,6 @@
 <template>
   <v-app dark class="app">
-    <v-app-bar class="elevation-0" app color="#0F0713">
+    <v-app-bar class="elevation-0"  color="#0F0713">
       <v-btn text to="/" v-if="$route.name !== 'index'"> Inicio </v-btn>
 
       <v-spacer></v-spacer>
