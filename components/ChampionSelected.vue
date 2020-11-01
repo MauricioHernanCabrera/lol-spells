@@ -2,10 +2,10 @@
   <div v-show="!isLoading">
     <lol-champion-header title="LOL SPELLS" subtitle="Selecciona hechizos" />
 
-    <lol-champion-list v-show="selectedChampionsMap.length > 0">
+    <lol-champion-list v-show="selectedChampionsMapByPosition.length > 0">
       <li
         class="champion__item"
-        v-for="championItem in selectedChampionsMap"
+        v-for="(championItem, championIndex) in selectedChampionsMapByPosition"
         :key="championItem.name"
       >
         <div
@@ -63,10 +63,14 @@
             />
           </lol-champion-spell-list>
         </div>
+
+        <div class="champion__castling" @click="castling(championIndex)">
+          <v-icon class="champion__castling_icon">mdi-repeat</v-icon>
+        </div>
       </li>
     </lol-champion-list>
 
-    <lol-champion-no-items v-show="selectedChampionsMap.length == 0">
+    <lol-champion-no-items v-show="selectedChampionsMapByPosition.length == 0">
       No se encontraron campeones
     </lol-champion-no-items>
 
@@ -153,6 +157,10 @@ export default {
         ...this.championsDataObject[selectedChampionItem.championId],
       }));
     },
+
+    selectedChampionsMapByPosition() {
+      return this.selectedChampionsMap.slice().sort((a, b) => a.position - b.position)
+    }
   },
 
   mounted() {
@@ -284,6 +292,26 @@ export default {
         handleClick,
       };
     },
+
+    castling(championIndex) {
+      const clone = JSON.parse(JSON.stringify(this.selectedChampionsMapByPosition))
+
+      this.updateSelectedChampion({
+        championId: clone[championIndex].championId,
+        champion: {
+          position: clone[championIndex + 1].position
+        },
+      });
+
+      this.updateSelectedChampion({
+        championId: clone[championIndex + 1].championId,
+        champion: {
+          position: clone[championIndex].position
+        },
+      });
+
+      console.log(this.selectedChampions)
+    }
   },
 };
 </script>
@@ -297,13 +325,34 @@ export default {
   margin: 0;
   padding: 0;
   list-style: none;
+  
+  .champion__item:last-child {
+    margin-bottom: 0;
+  }
+
+  .champion__item:last-child .champion__castling {
+    display: none;
+  }
+}
+
+.champion__castling {
+  position: absolute;
+  bottom: -42px;
+  z-index: 10;
+  left: 50%;
+  cursor: pointer;
+}
+
+.champion__castling_icon {
+  transform: translateX(-50%) rotateZ(90deg);
+  font-size: 32px;
 }
 
 .champion__item {
   position: relative;
   border: 1px solid $color_primary;
   transition: 0.3s;
-  overflow: hidden;
+  margin-bottom: 40px;
 }
 
 .champion__background {

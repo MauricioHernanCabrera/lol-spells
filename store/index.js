@@ -10,10 +10,21 @@ export const getters = {};
 
 export const mutations = {
   SET_SELECTED_CHAMPIONS: (state, selectedChampions) => {
-    state.selectedChampions = selectedChampions;
+    state.selectedChampions = selectedChampions.map(
+      (selectedChampionItem, selectedChampionIndex) => ({
+        position: selectedChampionIndex + 1,
+        ...selectedChampionItem
+      })
+    );
   },
 
   ADD_SELECTED_CHAMPION: (state, champion) => {
+    const selectedChampionLength = state.selectedChampions.length;
+    const position =
+      selectedChampionLength == 0
+        ? 1
+        : state.selectedChampions[selectedChampionLength - 1].position + 1;
+
     state.selectedChampions.push({
       firstSpell: {},
       secondSpell: {},
@@ -21,7 +32,8 @@ export const mutations = {
       hasBoots: false,
       interval: null,
       isRun: false,
-      ...champion
+      ...champion,
+      position
     });
   },
 

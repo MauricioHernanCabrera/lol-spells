@@ -1,6 +1,6 @@
 <template>
   <v-app dark class="app">
-    <v-app-bar class="elevation-0"  color="#0F0713">
+    <v-toolbar class="elevation-0"  color="#0F0713">
       <v-btn text to="/" v-if="$route.name !== 'index'"> Inicio </v-btn>
 
       <v-spacer></v-spacer>
@@ -9,11 +9,11 @@
         <span class="hidden-xs-only">Copiar link de partida</span>
         <v-icon class="ml-2">mdi-share-variant-outline</v-icon>
       </v-btn>
-    </v-app-bar>
+    </v-toolbar>
 
-    <v-main>
+    <v-content>
       <nuxt />
-    </v-main>
+    </v-content>
 
     <input type="text" value="" class="copy_clipboard" id="copyClipboard" />
   </v-app>

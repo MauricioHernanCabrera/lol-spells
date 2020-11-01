@@ -1,7 +1,7 @@
 <template>
-  <ul class="champion__list">
+  <transition-group class="champion__list" tag="ul" name="champion__list">
     <slot />
-  </ul>
+  </transition-group>
 </template>
 
 <script>
@@ -15,5 +15,9 @@ export default {};
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.champion__list-move {
+  transition: transform 1s;
 }
 </style>
